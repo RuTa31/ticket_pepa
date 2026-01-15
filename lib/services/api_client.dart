@@ -11,16 +11,40 @@ class CheckQrResponse {
   final String alertType;
   final String message;
   final String? bookingId;
+  final String? serial;
+  final String? scanned;
+  final String? qrData;
 
   const CheckQrResponse({
     required this.alertType,
     required this.message,
     this.bookingId,
+    this.serial,
+    this.scanned,
+    this.qrData,
   });
 
   bool get isSuccess => alertType.toLowerCase() == 'success';
+  bool get isScanned => scanned?.toLowerCase() == 'yes';
+  bool get needsVerification => scanned?.toLowerCase() == 'no';
 
   factory CheckQrResponse.fromJson(Map<String, dynamic> json) {
+    // Шинэ API response format (op: "scan")
+    if (json['ok'] == true && json['data'] != null) {
+      final data = json['data'] as Map<String, dynamic>;
+      final scanned = data['scanned']?.toString() ?? 'no';
+      
+      return CheckQrResponse(
+        alertType: scanned == 'yes' ? 'error' : 'info',
+        message: scanned == 'yes' ? 'Already scanned' : 'Not scanned yet',
+        serial: data['serial']?.toString(),
+        scanned: scanned,
+        qrData: data['qr_data']?.toString(),
+        bookingId: data['qr_data']?.toString(),
+      );
+    }
+    
+    // Fallback to old format
     return CheckQrResponse(
       alertType: (json['alert_type'] ?? json['type'] ?? 'error').toString(),
       message: (json['message'] ?? '').toString(),
@@ -32,6 +56,9 @@ class CheckQrResponse {
     'alert_type': alertType,
     'message': message,
     if (bookingId != null) 'booking_id': bookingId,
+    if (serial != null) 'serial': serial,
+    if (scanned != null) 'scanned': scanned,
+    if (qrData != null) 'qr_data': qrData,
   };
 }
 
@@ -184,53 +211,201 @@ class ApiClient {
     return LoginSuccess(token, profile);
   }
 
-  /// Check a scanned QR code against the backend.
-  ///
-  /// Sends POST form fields `{ booking_id: ... }` to either the admin or
-  /// organizer endpoint based on the provided [role]. Returns the server's
-  /// JSON payload mapped into [CheckQrResponse].
-  Future<CheckQrResponse> checkQrCode({
+  /// Step 1: Check QR code scan status
+  Future<CheckQrResponse> checkQrScan({
     required String token,
-    required UserRole role,
-    required String bookingId,
+    required String qrData,
   }) async {
-    if (apiBaseUrl.contains('YOUR_API_BASE_URL_HERE')) {
-      throw Exception('Please set apiBaseUrl in lib/services/api_client.dart');
-    }
+    final uri = Uri.parse('$apiBaseUrl/');
+    
+    final requestBody = {
+      'op': 'scan',
+      'qr_data': qrData,
+      'token': token,
+    };
 
-    final path = role == UserRole.admin
-        ? '/api/scanner/admin/check-qrcode'
-        : '/api/scanner/organizer/check-qrcode';
-    final uri = _buildUri(path, const {});
+    print('🔵 CHECK QR SCAN REQUEST:');
+    print('   URL: $uri');
+    print('   Method: POST');
+    print('   Headers: {');
+    print('     "Accept": "application/json",');
+    print('     "Content-Type": "application/json"');
+    print('   }');
+    print('   Body: ${json.encode(requestBody)}');
+    print('   Token (first 20 chars): ${token.length > 20 ? token.substring(0, 20) : token}...');
 
     final resp = await _client.post(
       uri,
       headers: {
         'Accept': 'application/json',
-        // If your backend expects a different token header, adjust here.
-        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
       },
-      body: {'booking_id': bookingId},
+      body: json.encode(requestBody),
     );
 
-    // Parse gracefully even on non-200s if server returns JSON
-    Map<String, dynamic>? jsonBody;
+    print('🟢 CHECK QR SCAN RESPONSE:');
+    print('   Status: ${resp.statusCode}');
+    print('   Body: ${resp.body}');
+
+    if (resp.statusCode != 200) {
+      print('❌ QR scan check failed with status ${resp.statusCode}');
+      throw Exception('QR scan check failed: ${resp.statusCode}');
+    }
+
+    final Map<String, dynamic> data = json.decode(resp.body);
+
+    if (data['ok'] != true) {
+      print('❌ API returned ok=false: ${data['message']}');
+      throw Exception('QR scan check failed: ${data['message'] ?? 'Unknown error'}');
+    }
+
+    return CheckQrResponse.fromJson(data);
+  }
+
+  /// Step 2: Verify/mark the ticket as scanned
+  Future<CheckQrResponse> verifyQrScan({
+    required String token,
+    required String serial,
+  }) async {
+    final uri = Uri.parse('$apiBaseUrl/');
+    
+    final requestBody = {
+      'op': 'scan_verify',
+      'serial': serial,
+      'token': token,
+    };
+
+    print('🔵 VERIFY QR SCAN REQUEST:');
+    print('   URL: $uri');
+    print('   Method: POST');
+    print('   Headers: {');
+    print('     "Accept": "application/json",');
+    print('     "Content-Type": "application/json"');
+    print('   }');
+    print('   Body: ${json.encode(requestBody)}');
+    print('   Serial: $serial');
+    print('   Token (first 20 chars): ${token.length > 20 ? token.substring(0, 20) : token}...');
+
+    final resp = await _client.post(
+      uri,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(requestBody),
+    );
+
+    print('🟢 VERIFY QR SCAN RESPONSE:');
+    print('   Status: ${resp.statusCode}');
+    print('   Body: ${resp.body}');
+
+    if (resp.statusCode != 200) {
+      print('❌ QR scan verification failed with status ${resp.statusCode}');
+      throw Exception('QR scan verification failed: ${resp.statusCode}');
+    }
+
+    final Map<String, dynamic> data = json.decode(resp.body);
+
+    if (data['ok'] != true) {
+      print('❌ API returned ok=false: ${data['message']}');
+      throw Exception('QR scan verification failed: ${data['message'] ?? 'Unknown error'}');
+    }
+
+    print('✅ QR scan verified successfully!');
+    // After successful verification, return success response
+    return const CheckQrResponse(
+      alertType: 'success',
+      message: 'Verified',
+    );
+  }
+
+  /// Check a scanned QR code against the backend.
+  ///
+  /// New 2-step flow:
+  /// 1. Check scan status with op: "scan"
+  /// 2. If not scanned, verify with op: "scan_verify"
+  Future<CheckQrResponse> checkQrCode({
+    required String token,
+    required UserRole role,
+    required String bookingId,
+  }) async {
+    print('');
+    print('═══════════════════════════════════════════');
+    print('🎫 Starting QR Code Verification Flow');
+    print('═══════════════════════════════════════════');
+    print('   Booking ID: $bookingId');
+    print('   Token available: ${token.isNotEmpty ? "Yes (${token.length} chars)" : "No"}');
+    print('   User Role: ${role.name}');
+    print('');
+
     try {
-      jsonBody = json.decode(resp.body) as Map<String, dynamic>;
-    } catch (_) {}
+      // Step 1: Check scan status
+      print('📍 STEP 1: Checking scan status...');
+      final checkResponse = await checkQrScan(
+        token: token,
+        qrData: bookingId,
+      );
 
-    if (jsonBody != null && jsonBody.isNotEmpty) {
-      return CheckQrResponse.fromJson(jsonBody);
-    }
+      print('');
+      print('📊 Scan Status Result:');
+      print('   Scanned: ${checkResponse.scanned}');
+      print('   Serial: ${checkResponse.serial ?? "N/A"}');
+      print('   Message: ${checkResponse.message}');
 
-    // Fallback generic errors
-    if (resp.statusCode >= 200 && resp.statusCode < 300) {
-      return const CheckQrResponse(alertType: 'success', message: 'Verified');
+      // If already scanned, return error
+      if (checkResponse.isScanned) {
+        print('⚠️ Ticket already scanned!');
+        print('═══════════════════════════════════════════');
+        print('');
+        return CheckQrResponse(
+          alertType: 'error',
+          message: 'Already scanned',
+          bookingId: bookingId,
+          serial: checkResponse.serial,
+          scanned: 'yes',
+          qrData: bookingId,
+        );
+      }
+
+      // Step 2: If not scanned, verify it
+      if (checkResponse.needsVerification && checkResponse.serial != null) {
+        print('');
+        print('📍 STEP 2: Marking ticket as scanned...');
+        await verifyQrScan(
+          token: token,
+          serial: checkResponse.serial!,
+        );
+
+        print('═══════════════════════════════════════════');
+        print('');
+        // Return success after verification
+        return CheckQrResponse(
+          alertType: 'success',
+          message: 'Verified',
+          bookingId: bookingId,
+          serial: checkResponse.serial,
+          scanned: 'yes',
+          qrData: bookingId,
+        );
+      }
+
+      // Fallback
+      print('⚠️ Unexpected response - returning as is');
+      print('═══════════════════════════════════════════');
+      print('');
+      return checkResponse;
+    } catch (e) {
+      print('');
+      print('❌ ERROR in checkQrCode:');
+      print('   $e');
+      print('═══════════════════════════════════════════');
+      print('');
+      return CheckQrResponse(
+        alertType: 'error',
+        message: 'Verification failed: $e',
+        bookingId: bookingId,
+      );
     }
-    return CheckQrResponse(
-      alertType: 'error',
-      message: 'Verification failed (${resp.statusCode})',
-    );
   }
 
   /// Fetch dashboard data including events, tickets, and statistics.

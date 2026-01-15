@@ -72,10 +72,18 @@ class _QrResultScreenState extends State<QrResultScreen>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final success = (widget.alertType?.toLowerCase() == 'success');
+    final alreadyScanned =
+        (widget.apiMessage?.toLowerCase().contains('already') == true);
     final am = widget.apiMessage?.trim();
     final showMsg = (am != null && am.isNotEmpty);
     final titleText = showMsg
-        ? ('${am.toLowerCase() == 'you do not have permission' ? '' : 'TICKET'} ${am.toUpperCase()}')
+        ? (success
+              ? 'TICKET VERIFIED'
+              : alreadyScanned
+              ? 'TICKET ALREADY SCANNED'
+              : am.toLowerCase() == 'you do not have permission'
+              ? am.toUpperCase()
+              : 'TICKET ${am.toUpperCase()}')
         : 'Code Scanned!';
 
     final accentColor = success
