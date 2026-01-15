@@ -80,6 +80,9 @@ class MyApp extends StatelessWidget {
                   String? apiMessage;
                   String? alertType;
                   String? bookingId;
+                  String? scannedAt;
+                  String? scannedByName;
+                  String? scannedByUser;
                   if (args is String) {
                     value = args;
                   } else if (args is Map) {
@@ -94,12 +97,18 @@ class MyApp extends StatelessWidget {
                         ?.toString();
                     bookingId = (map['booking_id'] ?? map['bookingId'])
                         ?.toString();
+                    scannedAt = map['scanned_at']?.toString();
+                    scannedByName = map['scanned_by_name']?.toString();
+                    scannedByUser = map['scanned_by_user']?.toString();
                   }
                   return QrResultScreen(
                     value: value,
                     apiMessage: apiMessage,
                     alertType: alertType,
                     bookingId: bookingId,
+                    scannedAt: scannedAt,
+                    scannedByName: scannedByName,
+                    scannedByUser: scannedByUser,
                   );
                 },
               },

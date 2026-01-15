@@ -163,6 +163,9 @@ class ScannerProvider extends ChangeNotifier {
           'apiMessage': res.message,
           'alertType': res.alertType,
           if (res.bookingId != null) 'booking_id': res.bookingId,
+          if (res.scannedAt != null) 'scanned_at': res.scannedAt,
+          if (res.scannedByName != null) 'scanned_by_name': res.scannedByName,
+          if (res.scannedByUser != null) 'scanned_by_user': res.scannedByUser,
         };
       } else {
         payload = {'value': code};

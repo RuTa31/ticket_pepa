@@ -9,12 +9,18 @@ class QrResultScreen extends StatefulWidget {
   final String? apiMessage;
   final String? alertType;
   final String? bookingId;
+  final String? scannedAt;
+  final String? scannedByName;
+  final String? scannedByUser;
   const QrResultScreen({
     super.key,
     required this.value,
     this.apiMessage,
     this.alertType,
     this.bookingId,
+    this.scannedAt,
+    this.scannedByName,
+    this.scannedByUser,
   });
 
   @override
@@ -332,6 +338,79 @@ class _QrResultScreenState extends State<QrResultScreen>
                                     ),
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        // Show scanned info if already scanned
+                        if (widget.scannedAt != null ||
+                            widget.scannedByName != null) ...[
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? Colors.grey.shade800.withValues(alpha: 0.5)
+                                  : Colors.red.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: Colors.red.shade300,
+                                width: 1,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (widget.scannedByName != null) ...[
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.person_outline,
+                                        size: 18,
+                                        color: Colors.red.shade700,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          'Scanned by: ${widget.scannedByName}',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: isDark
+                                                ? Colors.white
+                                                : Colors.red.shade900,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                                if (widget.scannedAt != null) ...[
+                                  if (widget.scannedByName != null)
+                                    const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.access_time,
+                                        size: 18,
+                                        color: Colors.red.shade700,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          'Scanned at: ${widget.scannedAt}',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            color: isDark
+                                                ? Colors.white70
+                                                : Colors.red.shade800,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ],
                             ),
                           ),

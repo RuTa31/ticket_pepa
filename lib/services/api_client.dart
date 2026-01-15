@@ -14,6 +14,9 @@ class CheckQrResponse {
   final String? serial;
   final String? scanned;
   final String? qrData;
+  final String? scannedAt;
+  final String? scannedByName;
+  final String? scannedByUser;
 
   const CheckQrResponse({
     required this.alertType,
@@ -22,6 +25,9 @@ class CheckQrResponse {
     this.serial,
     this.scanned,
     this.qrData,
+    this.scannedAt,
+    this.scannedByName,
+    this.scannedByUser,
   });
 
   bool get isSuccess => alertType.toLowerCase() == 'success';
@@ -33,7 +39,7 @@ class CheckQrResponse {
     if (json['ok'] == true && json['data'] != null) {
       final data = json['data'] as Map<String, dynamic>;
       final scanned = data['scanned']?.toString() ?? 'no';
-      
+
       return CheckQrResponse(
         alertType: scanned == 'yes' ? 'error' : 'info',
         message: scanned == 'yes' ? 'Already scanned' : 'Not scanned yet',
@@ -41,9 +47,12 @@ class CheckQrResponse {
         scanned: scanned,
         qrData: data['qr_data']?.toString(),
         bookingId: data['qr_data']?.toString(),
+        scannedAt: data['scanned_at']?.toString(),
+        scannedByName: data['scanned_by_name']?.toString(),
+        scannedByUser: data['scanned_by_user']?.toString(),
       );
     }
-    
+
     // Fallback to old format
     return CheckQrResponse(
       alertType: (json['alert_type'] ?? json['type'] ?? 'error').toString(),
@@ -59,6 +68,9 @@ class CheckQrResponse {
     if (serial != null) 'serial': serial,
     if (scanned != null) 'scanned': scanned,
     if (qrData != null) 'qr_data': qrData,
+    if (scannedAt != null) 'scanned_at': scannedAt,
+    if (scannedByName != null) 'scanned_by_name': scannedByName,
+    if (scannedByUser != null) 'scanned_by_user': scannedByUser,
   };
 }
 
@@ -217,12 +229,8 @@ class ApiClient {
     required String qrData,
   }) async {
     final uri = Uri.parse('$apiBaseUrl/');
-    
-    final requestBody = {
-      'op': 'scan',
-      'qr_data': qrData,
-      'token': token,
-    };
+
+    final requestBody = {'op': 'scan', 'qr_data': qrData, 'token': token};
 
     print('🔵 CHECK QR SCAN REQUEST:');
     print('   URL: $uri');
@@ -232,7 +240,9 @@ class ApiClient {
     print('     "Content-Type": "application/json"');
     print('   }');
     print('   Body: ${json.encode(requestBody)}');
-    print('   Token (first 20 chars): ${token.length > 20 ? token.substring(0, 20) : token}...');
+    print(
+      '   Token (first 20 chars): ${token.length > 20 ? token.substring(0, 20) : token}...',
+    );
 
     final resp = await _client.post(
       uri,
@@ -256,7 +266,9 @@ class ApiClient {
 
     if (data['ok'] != true) {
       print('❌ API returned ok=false: ${data['message']}');
-      throw Exception('QR scan check failed: ${data['message'] ?? 'Unknown error'}');
+      throw Exception(
+        'QR scan check failed: ${data['message'] ?? 'Unknown error'}',
+      );
     }
 
     return CheckQrResponse.fromJson(data);
@@ -268,12 +280,8 @@ class ApiClient {
     required String serial,
   }) async {
     final uri = Uri.parse('$apiBaseUrl/');
-    
-    final requestBody = {
-      'op': 'scan_verify',
-      'serial': serial,
-      'token': token,
-    };
+
+    final requestBody = {'op': 'scan_verify', 'serial': serial, 'token': token};
 
     print('🔵 VERIFY QR SCAN REQUEST:');
     print('   URL: $uri');
@@ -284,7 +292,9 @@ class ApiClient {
     print('   }');
     print('   Body: ${json.encode(requestBody)}');
     print('   Serial: $serial');
-    print('   Token (first 20 chars): ${token.length > 20 ? token.substring(0, 20) : token}...');
+    print(
+      '   Token (first 20 chars): ${token.length > 20 ? token.substring(0, 20) : token}...',
+    );
 
     final resp = await _client.post(
       uri,
@@ -308,15 +318,14 @@ class ApiClient {
 
     if (data['ok'] != true) {
       print('❌ API returned ok=false: ${data['message']}');
-      throw Exception('QR scan verification failed: ${data['message'] ?? 'Unknown error'}');
+      throw Exception(
+        'QR scan verification failed: ${data['message'] ?? 'Unknown error'}',
+      );
     }
 
     print('✅ QR scan verified successfully!');
     // After successful verification, return success response
-    return const CheckQrResponse(
-      alertType: 'success',
-      message: 'Verified',
-    );
+    return const CheckQrResponse(alertType: 'success', message: 'Verified');
   }
 
   /// Check a scanned QR code against the backend.
@@ -334,17 +343,16 @@ class ApiClient {
     print('🎫 Starting QR Code Verification Flow');
     print('═══════════════════════════════════════════');
     print('   Booking ID: $bookingId');
-    print('   Token available: ${token.isNotEmpty ? "Yes (${token.length} chars)" : "No"}');
+    print(
+      '   Token available: ${token.isNotEmpty ? "Yes (${token.length} chars)" : "No"}',
+    );
     print('   User Role: ${role.name}');
     print('');
 
     try {
       // Step 1: Check scan status
       print('📍 STEP 1: Checking scan status...');
-      final checkResponse = await checkQrScan(
-        token: token,
-        qrData: bookingId,
-      );
+      final checkResponse = await checkQrScan(token: token, qrData: bookingId);
 
       print('');
       print('📊 Scan Status Result:');
@@ -355,6 +363,8 @@ class ApiClient {
       // If already scanned, return error
       if (checkResponse.isScanned) {
         print('⚠️ Ticket already scanned!');
+        print('   Scanned at: ${checkResponse.scannedAt ?? "N/A"}');
+        print('   Scanned by: ${checkResponse.scannedByName ?? "N/A"}');
         print('═══════════════════════════════════════════');
         print('');
         return CheckQrResponse(
@@ -364,6 +374,9 @@ class ApiClient {
           serial: checkResponse.serial,
           scanned: 'yes',
           qrData: bookingId,
+          scannedAt: checkResponse.scannedAt,
+          scannedByName: checkResponse.scannedByName,
+          scannedByUser: checkResponse.scannedByUser,
         );
       }
 
@@ -371,10 +384,7 @@ class ApiClient {
       if (checkResponse.needsVerification && checkResponse.serial != null) {
         print('');
         print('📍 STEP 2: Marking ticket as scanned...');
-        await verifyQrScan(
-          token: token,
-          serial: checkResponse.serial!,
-        );
+        await verifyQrScan(token: token, serial: checkResponse.serial!);
 
         print('═══════════════════════════════════════════');
         print('');
