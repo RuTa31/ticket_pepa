@@ -487,56 +487,6 @@ class _QrResultScreenState extends State<QrResultScreen>
                 ),
               ),
               const SizedBox(height: 24),
-              // Action Buttons
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _buildActionButton(
-                        icon: Icons.copy_rounded,
-                        label: 'Copy',
-                        isDark: isDark,
-                        onPressed: () async {
-                          await Clipboard.setData(
-                            ClipboardData(text: widget.value),
-                          );
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Row(
-                                  children: [
-                                    Icon(
-                                      Icons.check_circle,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(width: 12),
-                                    Text('Copied to clipboard'),
-                                  ],
-                                ),
-                                backgroundColor: Colors.green,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildActionButton(
-                        icon: Icons.share_rounded,
-                        label: 'Share',
-                        isDark: isDark,
-                        onPressed: () => Share.share(widget.value),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               const SizedBox(height: 12),
               FadeTransition(
                 opacity: _fadeAnimation,
