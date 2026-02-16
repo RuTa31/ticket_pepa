@@ -16,6 +16,7 @@ import 'common/iphone_17_pro_max_frame.dart';
 import 'services/basic_service.dart';
 import 'auth/ui/screens/splash_screen.dart';
 import 'scanner/scanner_provider.dart';
+import 'sales/sales_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AppSettingsProvider()),
         ChangeNotifierProvider(create: (_) => ScannerProvider()),
         ChangeNotifierProvider(create: (_) => DashboardProvider()),
+        ChangeNotifierProvider(create: (_) => SalesProvider()),
       ],
       child: Consumer<AppSettingsProvider>(
         builder: (context, settings, _) => ValueListenableBuilder<int>(

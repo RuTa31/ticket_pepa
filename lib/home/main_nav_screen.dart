@@ -5,6 +5,7 @@ import '../common/app_colors.dart';
 import 'home_screen.dart';
 import '../scanner/qr_scanner_page.dart';
 import '../profile/profile_screen.dart';
+import '../sales/sales_screen.dart';
 import 'providers/dashboard_provider.dart';
 import '../auth/providers/auth_provider.dart';
 
@@ -50,6 +51,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
         children: [
           const HomeScreen(),
           QrScannerPage(isActive: _index == 1, showBack: false),
+          const SalesScreen(),
           const ProfileScreen(),
         ],
       ),
@@ -68,7 +70,8 @@ class _MainNavScreenState extends State<MainNavScreen> {
         children: [
           _buildNavItem(0, 'Home', Icons.home_outlined, Icons.home),
           _buildNavItem(1, 'Scanner', Icons.qr_code_scanner, Icons.qr_code_2),
-          _buildNavItem(2, 'Profile', Icons.person_outline, Icons.person),
+          _buildNavItem(2, 'Sales', Icons.storefront_outlined, Icons.storefront),
+          _buildNavItem(3, 'Profile', Icons.person_outline, Icons.person),
         ],
       ),
     );

@@ -142,6 +142,51 @@ class LoginSuccess {
   LoginSuccess(this.token, this.profile);
 }
 
+class SalesPlan {
+  final int id;
+  final String name;
+  final String price;
+
+  const SalesPlan({required this.id, required this.name, required this.price});
+
+  factory SalesPlan.fromJson(Map<String, dynamic> json) {
+    return SalesPlan(
+      id: (json['id'] as num).toInt(),
+      name: json['name']?.toString() ?? '',
+      price: json['price']?.toString() ?? '0',
+    );
+  }
+}
+
+class SalesEvent {
+  final int id;
+  final String name;
+  final String? logo;
+  final List<SalesPlan> plans;
+
+  const SalesEvent({
+    required this.id,
+    required this.name,
+    this.logo,
+    required this.plans,
+  });
+
+  String? get logoUrl =>
+      logo != null ? '$apiBaseUrl/$logo' : null;
+
+  factory SalesEvent.fromJson(Map<String, dynamic> json) {
+    final plansJson = (json['plans'] as List?) ?? [];
+    return SalesEvent(
+      id: (json['id'] as num).toInt(),
+      name: json['name']?.toString() ?? '',
+      logo: json['logo']?.toString(),
+      plans: plansJson
+          .map((p) => SalesPlan.fromJson(p as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
+
 class ApiClient {
   final http.Client _client;
   ApiClient({http.Client? client}) : _client = client ?? http.Client();
@@ -416,6 +461,37 @@ class ApiClient {
         bookingId: bookingId,
       );
     }
+  }
+
+  /// Fetch sales events list with plans.
+  Future<List<SalesEvent>> getSalesEvents({
+    required String token,
+  }) async {
+    final uri = Uri.parse('$apiBaseUrl/');
+
+    final resp = await _client.post(
+      uri,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({'op': 'list', 'token': token}),
+    );
+
+    if (resp.statusCode != 200) {
+      throw Exception('Failed to fetch sales events: ${resp.statusCode}');
+    }
+
+    final Map<String, dynamic> data = json.decode(resp.body);
+
+    if (data['ok'] != true) {
+      throw Exception(data['message']?.toString() ?? 'Failed to fetch events');
+    }
+
+    final eventsJson = (data['data']?['events'] as List?) ?? [];
+    return eventsJson
+        .map((e) => SalesEvent.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   /// Fetch dashboard data including events, tickets, and statistics.
