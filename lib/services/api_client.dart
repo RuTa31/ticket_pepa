@@ -187,6 +187,67 @@ class SalesEvent {
   }
 }
 
+class InvoiceResponse {
+  final String orderId;
+  final int qty;
+  final int amount;
+  final String qrImage; // base64
+
+  const InvoiceResponse({
+    required this.orderId,
+    required this.qty,
+    required this.amount,
+    required this.qrImage,
+  });
+
+  factory InvoiceResponse.fromJson(Map<String, dynamic> json) {
+    return InvoiceResponse(
+      orderId: json['order_id']?.toString() ?? '',
+      qty: (json['qty'] as num?)?.toInt() ?? 0,
+      amount: (json['amount'] as num?)?.toInt() ?? 0,
+      qrImage: json['qr_image']?.toString() ?? '',
+    );
+  }
+}
+
+class TicketInfo {
+  final String? serial;
+  final String? qrImg;
+  final String? qrCode;
+
+  const TicketInfo({this.serial, this.qrImg, this.qrCode});
+
+  factory TicketInfo.fromJson(Map<String, dynamic> json) {
+    return TicketInfo(
+      serial: json['serial']?.toString(),
+      qrImg: json['qr_img']?.toString(),
+      qrCode: json['qr_code']?.toString(),
+    );
+  }
+}
+
+class PaymentStatusResponse {
+  final String status; // pending, paid, failed
+  final List<TicketInfo> ticketInfo;
+
+  const PaymentStatusResponse({required this.status, this.ticketInfo = const []});
+
+  bool get isPending => status == 'pending';
+  bool get isPaid => status == 'paid';
+  bool get isFailed => status != 'pending' && status != 'paid';
+
+  factory PaymentStatusResponse.fromJson(Map<String, dynamic> json) {
+    final tickets = (json['ticket_info'] as List?)
+            ?.map((t) => TicketInfo.fromJson(t as Map<String, dynamic>))
+            .toList() ??
+        [];
+    return PaymentStatusResponse(
+      status: json['status']?.toString() ?? 'pending',
+      ticketInfo: tickets,
+    );
+  }
+}
+
 class ApiClient {
   final http.Client _client;
   ApiClient({http.Client? client}) : _client = client ?? http.Client();
@@ -492,6 +553,92 @@ class ApiClient {
     return eventsJson
         .map((e) => SalesEvent.fromJson(e as Map<String, dynamic>))
         .toList();
+  }
+
+  /// Create an invoice for ticket purchase.
+  Future<InvoiceResponse> createInvoice({
+    required String token,
+    required int eventId,
+    required int eventPlanId,
+    required int qty,
+    required String phone,
+    required String email,
+  }) async {
+    final uri = Uri.parse('$apiBaseUrl/');
+
+    final requestBody = {
+      'op': 'create_invoice',
+      'token': token,
+      'event_id': eventId,
+      'event_plan_id': eventPlanId,
+      'qty': qty,
+      'contact': {
+        'phone': phone,
+        'mail': email,
+      },
+    };
+    print('[createInvoice] REQUEST: ${json.encode(requestBody)}');
+
+    final resp = await _client.post(
+      uri,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(requestBody),
+    );
+
+    print('[createInvoice] RESPONSE (${resp.statusCode}): ${resp.body}');
+
+    if (resp.statusCode != 200) {
+      throw Exception('Failed to create invoice: ${resp.statusCode}');
+    }
+
+    final Map<String, dynamic> data = json.decode(resp.body);
+
+    if (data['ok'] != true) {
+      throw Exception(data['message']?.toString() ?? 'Failed to create invoice');
+    }
+
+    return InvoiceResponse.fromJson(data['data'] as Map<String, dynamic>);
+  }
+
+  /// Check invoice payment status.
+  Future<PaymentStatusResponse> checkInvoice({
+    required String token,
+    required String orderId,
+  }) async {
+    final uri = Uri.parse('$apiBaseUrl/');
+
+    final requestBody = {
+      'op': 'check_invoice',
+      'token': token,
+      'order_id': int.tryParse(orderId) ?? orderId,
+    };
+    print('[checkInvoice] REQUEST: ${json.encode(requestBody)}');
+
+    final resp = await _client.post(
+      uri,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(requestBody),
+    );
+
+    print('[checkInvoice] RESPONSE (${resp.statusCode}): ${resp.body}');
+
+    if (resp.statusCode != 200) {
+      throw Exception('Failed to check invoice: ${resp.statusCode}');
+    }
+
+    final Map<String, dynamic> data = json.decode(resp.body);
+
+    if (data['ok'] != true) {
+      throw Exception(data['message']?.toString() ?? 'Failed to check invoice');
+    }
+
+    return PaymentStatusResponse.fromJson(data);
   }
 
   /// Fetch dashboard data including events, tickets, and statistics.
