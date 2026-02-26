@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const Icon(Icons.error, color: Colors.white),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(err?.isNotEmpty == true ? err! : 'Invalid credentials'),
+                child: Text(err?.isNotEmpty == true ? err! : AppLocalizations.of(context).invalidCredentials),
               ),
             ],
           ),
@@ -63,6 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -80,14 +82,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 120,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Welcome',
+                  Text(
+                    l10n.welcome,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Login to access the QR Scanner',
+                  Text(
+                    l10n.loginSubtitle,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
@@ -99,14 +101,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _usernameCtrl,
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.next,
-                          decoration: const InputDecoration(
-                            labelText: 'Username',
+                          decoration: InputDecoration(
+                            labelText: l10n.username,
                             prefixIcon: Icon(Icons.person_outline),
                             border: OutlineInputBorder(),
                           ),
                           validator: (v) {
                             if (v == null || v.trim().isEmpty) {
-                              return 'Enter your username';
+                              return l10n.enterUsername;
                             }
                             return null;
                           },
@@ -116,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _passwordCtrl,
                           obscureText: _obscure,
                           decoration: InputDecoration(
-                            labelText: 'Password',
+                            labelText: l10n.password,
                             prefixIcon: const Icon(Icons.lock_outline),
                             border: const OutlineInputBorder(),
                             suffixIcon: IconButton(
@@ -132,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (v) {
                             if (v == null || v.isEmpty) {
-                              return 'Enter your password';
+                              return l10n.enterPassword;
                             }
                             return null;
                           },
@@ -161,8 +163,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                                   )
-                                : const Text(
-                                    'Login',
+                                : Text(
+                                    l10n.login,
                                     style: TextStyle(fontSize: 16),
                                   ),
                           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../auth/providers/auth_provider.dart';
@@ -17,6 +18,7 @@ class ProfileScreen extends StatelessWidget {
     final auth = context.watch<AuthProvider>();
     final profile = auth.profile;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -57,8 +59,8 @@ class ProfileScreen extends StatelessWidget {
                 const Divider(height: 1),
                 ListTile(
                   leading: const Icon(Icons.settings_outlined),
-                  title: const Text('Settings'),
-                  subtitle: const Text('App preferences'),
+                  title: Text(l10n.settings),
+                  subtitle: Text(l10n.appPreferences),
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const SettingsScreen()),
                   ),
@@ -66,7 +68,7 @@ class ProfileScreen extends StatelessWidget {
                 const Divider(height: 1),
                 ListTile(
                   leading: const Icon(Icons.logout),
-                  title: const Text('Logout'),
+                  title: Text(l10n.logout),
                   onTap: () async {
                     final ok = await showDialog<bool>(
                       context: context,
@@ -74,13 +76,13 @@ class ProfileScreen extends StatelessWidget {
                         backgroundColor: isDark
                             ? Colors.grey.shade900
                             : Colors.white,
-                        title: const Text('Logout?'),
-                        content: const Text('You will need to login again.'),
+                        title: Text(l10n.logoutTitle),
+                        content: Text(l10n.logoutContent),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(ctx, false),
                             child: Text(
-                              'Cancel',
+                              l10n.cancel,
                               style: TextStyle(color: AppColors.primaryColor),
                             ),
                           ),
@@ -90,7 +92,7 @@ class ProfileScreen extends StatelessWidget {
                             ),
                             onPressed: () => Navigator.pop(ctx, true),
                             child: Text(
-                              'Logout',
+                              l10n.logout,
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -131,7 +133,8 @@ class _ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = profile?.displayName ?? 'Guest User';
+    final l10n = AppLocalizations.of(context);
+    final name = profile?.displayName ?? l10n.guestUser;
     final email = profile?.email ?? '-';
     final role = profile?.role.name ?? 'guest';
     final photoUrl = profile?.photoUrl;

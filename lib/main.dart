@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'scanner/qr_scanner_page.dart';
@@ -47,6 +49,14 @@ class MyApp extends StatelessWidget {
             final app = MaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'Pepa Ticket',
+              locale: const Locale('mn'),
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
               theme: ThemeData(
                 colorScheme: ColorScheme.fromSeed(
                   seedColor: AppColors.primaryColor,

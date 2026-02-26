@@ -74,7 +74,7 @@ class DashboardProvider extends ChangeNotifier {
     if (endDate == null) return '';
 
     final now = DateTime.now();
-    if (now.isAfter(endDate)) return 'Ended';
+    if (now.isAfter(endDate)) return 'Дууссан';
 
     final difference = endDate.difference(now);
 
@@ -83,7 +83,7 @@ class DashboardProvider extends ChangeNotifier {
     final minutes = difference.inMinutes % 60;
 
     if (days > 0) {
-      return '$days day${days > 1 ? 's' : ''} ${hours}h left';
+      return '${days}өдөр ${hours}ц үлдсэн';
     } else if (hours > 0) {
       return '${hours}h ${minutes}m left';
     } else {
@@ -106,13 +106,13 @@ class DashboardProvider extends ChangeNotifier {
 
     if (days > 30) {
       final months = (days / 30).floor();
-      return 'In $months month${months > 1 ? 's' : ''}';
+      return '${months}сарын дараа';
     } else if (days > 0) {
-      return 'In $days day${days > 1 ? 's' : ''}';
+      return '${days}өдрийн дараа';
     } else if (hours > 0) {
-      return 'In ${hours}h';
+      return '${hours}цагийн дараа';
     } else {
-      return 'Starting soon';
+      return 'Удахгүй эхэлнэ';
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:evento_ticket_scanner/common/app_colors.dart';
+import '../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,15 +13,15 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final settings = context.watch<AppSettingsProvider>();
     final mode = settings.themeMode;
-
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
         backgroundColor: isDark ? Colors.grey.shade900 : Colors.white,
         foregroundColor: isDark ? Colors.white : Colors.black,
-        title: const Text('Settings'),
+        title: Text(l10n.settings),
         centerTitle: true,
       ),
       body: ListView(
@@ -48,8 +49,8 @@ class SettingsScreen extends StatelessWidget {
                   onChanged: (v) =>
                       context.read<AppSettingsProvider>().setVibrateOnScan(v),
                   secondary: const Icon(Icons.vibration),
-                  title: const Text('Vibration'),
-                  subtitle: const Text('Vibrate on scan success'),
+                  title: Text(l10n.vibration),
+                  subtitle: Text(l10n.vibrateOnScanSuccess),
                 ),
               ],
             ),
@@ -61,10 +62,10 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const ListTile(
-                  leading: Icon(Icons.palette_outlined),
-                  title: Text('Theme'),
-                  subtitle: Text('Choose app appearance'),
+                ListTile(
+                  leading: const Icon(Icons.palette_outlined),
+                  title: Text(l10n.theme),
+                  subtitle: Text(l10n.chooseAppAppearance),
                 ),
                 const Divider(height: 1),
                 Padding(
@@ -77,21 +78,21 @@ class SettingsScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    segments: const [
+                    segments: [
                       ButtonSegment(
                         value: ThemeMode.system,
-                        label: Text('System'),
-                        icon: Icon(Icons.settings_suggest_outlined),
+                        label: Text(l10n.systemTheme),
+                        icon: const Icon(Icons.settings_suggest_outlined),
                       ),
                       ButtonSegment(
                         value: ThemeMode.light,
-                        label: Text('Light'),
-                        icon: Icon(Icons.light_mode_outlined),
+                        label: Text(l10n.lightTheme),
+                        icon: const Icon(Icons.light_mode_outlined),
                       ),
                       ButtonSegment(
                         value: ThemeMode.dark,
-                        label: Text('Dark'),
-                        icon: Icon(Icons.dark_mode_outlined),
+                        label: Text(l10n.darkTheme),
+                        icon: const Icon(Icons.dark_mode_outlined),
                       ),
                     ],
                     selected: {mode},
@@ -113,7 +114,7 @@ class SettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: FilledButton.icon(
               icon: const Icon(Icons.restart_alt),
-              label: const Text('Restart App'),
+              label: Text(l10n.restartApp),
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primaryColor,
               ),

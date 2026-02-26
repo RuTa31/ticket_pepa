@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import '../common/app_colors.dart';
@@ -77,6 +78,7 @@ class _QrResultScreenState extends State<QrResultScreen>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
     final success = (widget.alertType?.toLowerCase() == 'success');
     final alreadyScanned =
         (widget.apiMessage?.toLowerCase().contains('already') == true);
@@ -84,13 +86,13 @@ class _QrResultScreenState extends State<QrResultScreen>
     final showMsg = (am != null && am.isNotEmpty);
     final titleText = showMsg
         ? (success
-              ? 'TICKET VERIFIED'
+              ? l10n.ticketVerified
               : alreadyScanned
-              ? 'TICKET ALREADY SCANNED'
+              ? l10n.ticketAlreadyScanned
               : am.toLowerCase() == 'you do not have permission'
               ? am.toUpperCase()
               : 'TICKET ${am.toUpperCase()}')
-        : 'Code Scanned!';
+        : l10n.codeScanned;
 
     final accentColor = success
         ? Colors.green
@@ -102,7 +104,7 @@ class _QrResultScreenState extends State<QrResultScreen>
         backgroundColor: isDark ? Colors.grey.shade900 : Colors.white,
         elevation: 1,
         title: Text(
-          'Result',
+          l10n.result,
           style: TextStyle(color: isDark ? Colors.white : Colors.black),
         ),
         centerTitle: true,
@@ -112,7 +114,7 @@ class _QrResultScreenState extends State<QrResultScreen>
               Icons.history,
               color: isDark ? Colors.white : Colors.black,
             ),
-            tooltip: 'History',
+            tooltip: l10n.history,
             onPressed: () => Navigator.of(context).pushNamed('/history'),
           ),
         ],
@@ -281,7 +283,7 @@ class _QrResultScreenState extends State<QrResultScreen>
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                success ? 'Verified' : 'Alert',
+                                success ? l10n.verified : l10n.alert,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -294,7 +296,7 @@ class _QrResultScreenState extends State<QrResultScreen>
                         const SizedBox(height: 12),
                         Text(
                           am.toLowerCase() == 'unverified'
-                              ? 'This is a fake or unauthorized ticket!'
+                              ? l10n.fakeOrUnauthorizedTicket
                               : '${am.toLowerCase() == 'you do not have permission' ? '' : 'TICKET'} ${am.toUpperCase()}',
                           style: TextStyle(
                             fontSize: 16,
@@ -449,7 +451,7 @@ class _QrResultScreenState extends State<QrResultScreen>
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'QR Code Data',
+                            l10n.qrCodeData,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -501,8 +503,8 @@ class _QrResultScreenState extends State<QrResultScreen>
                     elevation: 2,
                   ),
                   icon: const Icon(Icons.qr_code_scanner_rounded, size: 24),
-                  label: const Text(
-                    'Scan Again',
+                  label: Text(
+                    l10n.scanAgain,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   onPressed: () => Navigator.of(context).pop(true),
@@ -524,8 +526,8 @@ class _QrResultScreenState extends State<QrResultScreen>
                     ),
                   ),
                   icon: const Icon(Icons.home_rounded, size: 24),
-                  label: const Text(
-                    'Back to Home',
+                  label: Text(
+                    l10n.backToHome,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   onPressed: () {

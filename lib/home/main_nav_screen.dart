@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../common/app_colors.dart';
 
@@ -60,6 +61,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
   }
 
   Widget _buildBottomBar(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       height: 84,
       decoration: const BoxDecoration(
@@ -68,10 +70,10 @@ class _MainNavScreenState extends State<MainNavScreen> {
       ),
       child: Row(
         children: [
-          _buildNavItem(0, 'Home', Icons.home_outlined, Icons.home),
-          _buildNavItem(1, 'Scanner', Icons.qr_code_scanner, Icons.qr_code_2),
-          _buildNavItem(2, 'Sales', Icons.storefront_outlined, Icons.storefront),
-          _buildNavItem(3, 'Profile', Icons.person_outline, Icons.person),
+          _buildNavItem(0, l10n.navHome, Icons.home_outlined, Icons.home),
+          _buildNavItem(1, l10n.navScanner, Icons.qr_code_scanner, Icons.qr_code_2),
+          _buildNavItem(2, l10n.navSales, Icons.storefront_outlined, Icons.storefront),
+          _buildNavItem(3, l10n.navProfile, Icons.person_outline, Icons.person),
         ],
       ),
     );

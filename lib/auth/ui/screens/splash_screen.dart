@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/app_colors.dart';
@@ -209,23 +210,25 @@ class _LogoWithGlow extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Spacer(),
-          SizedBox(height: 48),
-          Row(
+        children: [
+          const Spacer(),
+          const SizedBox(height: 48),
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [NetworkAppLogo(height: 120, type: 'favicon')],
           ),
-          Spacer(),
-          Text(
-            'Powered by KreativDev',
-            style: TextStyle(
+          const Spacer(),
+          Builder(
+            builder: (context) => Text(
+              AppLocalizations.of(context).poweredBy,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: 48),
+          ),
+          const SizedBox(height: 48),
         ],
       ),
     );

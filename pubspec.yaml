@@ -8,6 +8,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   qr_code_scanner_plus: ^2.0.14
   provider: ^6.1.2
   shared_preferences: ^2.3.2

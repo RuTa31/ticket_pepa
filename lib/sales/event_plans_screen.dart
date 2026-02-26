@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../common/app_colors.dart';
 import '../services/api_client.dart';
 import 'invoice_screen.dart';
@@ -11,7 +12,7 @@ class EventPlansScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: isDark ? Colors.black : Colors.grey.shade50,
       appBar: AppBar(
@@ -34,7 +35,7 @@ class EventPlansScreen extends StatelessWidget {
                   Icon(Icons.inbox_outlined, size: 64, color: Colors.grey.shade400),
                   const SizedBox(height: 16),
                   Text(
-                    'No plans available',
+                    l10n.noPlansAvailable,
                     style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
                   ),
                 ],
@@ -52,6 +53,7 @@ class EventPlansScreen extends StatelessWidget {
 
   Widget _buildPlanCard(BuildContext context, SalesPlan plan) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Card(
       color: isDark ? Colors.grey.shade900 : Colors.white,
@@ -129,8 +131,8 @@ class EventPlansScreen extends StatelessWidget {
                   color: AppColors.primaryColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text(
-                  'Сонгох',
+                child: Text(
+                  l10n.select,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,

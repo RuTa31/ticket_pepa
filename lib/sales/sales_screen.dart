@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../auth/providers/auth_provider.dart';
 import '../common/app_colors.dart';
@@ -41,15 +42,15 @@ class _SalesScreenState extends State<SalesScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: isDark ? Colors.black : Colors.grey.shade50,
       appBar: AppBar(
         elevation: 1,
         backgroundColor: isDark ? Colors.grey.shade900 : Colors.white,
         automaticallyImplyLeading: false,
-        title: const Text(
-          'Sales',
+        title: Text(
+          l10n.sales,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -81,7 +82,7 @@ class _SalesScreenState extends State<SalesScreen> {
                     ElevatedButton.icon(
                       onPressed: _loadData,
                       icon: const Icon(Icons.refresh),
-                      label: const Text('Retry'),
+                      label: Text(l10n.retry),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryColor,
                         foregroundColor: Colors.white,
@@ -101,7 +102,7 @@ class _SalesScreenState extends State<SalesScreen> {
                   Icon(Icons.event_busy, size: 64, color: Colors.grey.shade400),
                   const SizedBox(height: 16),
                   Text(
-                    'No events found',
+                    l10n.noEventsFound,
                     style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
                   ),
                 ],

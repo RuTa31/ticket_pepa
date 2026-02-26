@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../auth/providers/auth_provider.dart';
@@ -166,15 +167,15 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: isDark ? Colors.black : Colors.grey.shade50,
       appBar: AppBar(
         elevation: 1,
         backgroundColor: isDark ? Colors.grey.shade900 : Colors.white,
-        title: const Text(
-          'Invoice',
-          style: TextStyle(
+        title: Text(
+          l10n.invoice,
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             letterSpacing: 0.5,
@@ -196,6 +197,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
   // ─── FORM STATE ───────────────────────────────────────────
 
   Widget _buildForm(bool isDark) {
+    final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -221,9 +223,9 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  _infoRow('Plan', widget.planName, isDark),
+                  _infoRow(l10n.plan, widget.planName, isDark),
                   _infoRow(
-                    'Нэгж үнэ',
+                    l10n.unitPrice,
                     '${widget.price.toStringAsFixed(0)}₮',
                     isDark,
                   ),
@@ -232,7 +234,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                   Row(
                     children: [
                       Text(
-                        'Ticket тоо',
+                        l10n.ticketCount,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
@@ -248,8 +250,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                   const Divider(height: 24),
                   Row(
                     children: [
-                      const Text(
-                        'Нийт дүн',
+                      Text(
+                        l10n.totalAmount,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -285,8 +287,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Холбоо барих',
+                  Text(
+                    l10n.contactInfo,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
@@ -294,7 +296,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
-                      labelText: 'Утасны дугаар',
+                      labelText: l10n.phoneNumber,
                       prefixIcon: const Icon(Icons.phone_outlined),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -306,7 +308,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: 'И-мэйл',
+                      labelText: l10n.email,
                       prefixIcon: const Icon(Icons.email_outlined),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -350,8 +352,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                 ),
                 elevation: 2,
               ),
-              child: const Text(
-                'Invoice үүсгэх',
+              child: Text(
+                l10n.createInvoice,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
@@ -427,6 +429,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
   // ─── QR PAYMENT STATE ─────────────────────────────────────
 
   Widget _buildQrPayment(bool isDark) {
+    final l10n = AppLocalizations.of(context);
     final invoice = _invoice!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -445,7 +448,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
               child: Column(
                 children: [
                   Text(
-                    'Нийт төлөх дүн',
+                    l10n.totalPayAmount,
                     style: TextStyle(
                       fontSize: 15,
                       color: isDark
@@ -498,7 +501,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        'Төлбөр хүлээгдэж байна...',
+                        l10n.waitingForPayment,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -526,7 +529,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.refresh),
-              label: Text(_manualChecking ? 'Шалгаж байна...' : 'Төлбөр шалгах'),
+              label: Text(_manualChecking ? l10n.checking : l10n.checkPayment),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primaryColor,
                 side: BorderSide(color: AppColors.primaryColor),
@@ -544,6 +547,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
   // ─── PAID STATE ───────────────────────────────────────────
 
   Widget _buildPaidResult(bool isDark) {
+    final l10n = AppLocalizations.of(context);
     final tickets = _paymentStatus?.ticketInfo ?? [];
 
     return SingleChildScrollView(
@@ -569,7 +573,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Төлбөр амжилттай төлөгдлөө',
+                    l10n.paymentSuccess,
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -580,7 +584,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                   if (_invoice != null) ...[
                     const SizedBox(height: 8),
                     Text(
-                      'Захиалгын дугаар: ${_invoice!.orderId}',
+                      l10n.orderNumberLabel(_invoice!.orderId),
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.green.shade700,
@@ -612,8 +616,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                   borderRadius: BorderRadius.circular(14),
                 ),
               ),
-              child: const Text(
-                'Буцах',
+              child: Text(
+                l10n.back,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
@@ -624,6 +628,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
   }
 
   Widget _buildTicketCard(TicketInfo ticket, bool isDark) {
+    final l10n = AppLocalizations.of(context);
     return Card(
       color: isDark ? Colors.grey.shade900 : Colors.white,
       margin: const EdgeInsets.only(bottom: 12),
@@ -648,7 +653,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    'Serial: ${ticket.serial}',
+                    l10n.serialLabel(ticket.serial!),
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -695,8 +700,8 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                     onTap: () {
                       Clipboard.setData(ClipboardData(text: ticket.qrCode!));
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Хуулагдлаа'),
+                        SnackBar(
+                          content: Text(l10n.copied),
                           duration: Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
                         ),
@@ -724,6 +729,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
   // ─── FAILED STATE ─────────────────────────────────────────
 
   Widget _buildFailed(bool isDark) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -742,7 +748,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                 Icon(Icons.cancel, size: 56, color: Colors.red.shade400),
                 const SizedBox(height: 16),
                 Text(
-                  'Төлбөр амжилтгүй',
+                  l10n.paymentFailed,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -756,7 +762,7 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
                   child: ElevatedButton.icon(
                     onPressed: _retryNewInvoice,
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Дахин оролдох'),
+                    label: Text(l10n.retryPayment),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red.shade600,
                       foregroundColor: Colors.white,

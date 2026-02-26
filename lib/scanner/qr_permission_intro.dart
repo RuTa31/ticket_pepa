@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../common/network_app_logo.dart';
 import '../common/app_colors.dart';
 
@@ -9,6 +10,7 @@ class QrPermissionIntro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
@@ -29,7 +31,7 @@ class QrPermissionIntro extends StatelessWidget {
                 Icon(Icons.qr_code_2, size: 140, color: AppColors.primaryColor),
                 const SizedBox(height: 24),
                 Text(
-                  'Please give access to your Camera so that we can scan and provide what is inside the code',
+                  l10n.cameraPermissionText,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 ),
@@ -50,7 +52,7 @@ class QrPermissionIntro extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    "Let's Get Started",
+                    l10n.letsGetStarted,
                     style: TextStyle(color: Colors.white),
                   ),
                 ),

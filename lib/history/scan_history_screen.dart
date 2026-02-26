@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../common/app_colors.dart';
@@ -13,33 +14,34 @@ class ScanHistoryScreen extends StatefulWidget {
 }
 
 class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
-  String _tab = 'All';
+  int _tab = 0; // 0=All, 1=Today
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: isDark ? Colors.grey.shade900 : Colors.white,
         elevation: 1,
         centerTitle: true,
-        title: const Text('Scan History'),
+        title: Text(l10n.scanHistory),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_sweep),
-            tooltip: 'Clear All',
+            tooltip: l10n.clearAll,
             onPressed: () async {
               final ok = await showDialog<bool>(
                 context: context,
                 builder: (ctx) => AlertDialog(
                   backgroundColor: isDark ? Colors.grey.shade900 : Colors.white,
-                  title: const Text('Clear history?'),
-                  content: const Text('This will remove all saved scans.'),
+                  title: Text(l10n.clearHistoryTitle),
+                  content: Text(l10n.clearHistoryContent),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(ctx, false),
                       child: Text(
-                        'Cancel',
+                        l10n.cancel,
                         style: TextStyle(color: AppColors.primaryColor),
                       ),
                     ),
@@ -48,8 +50,8 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
                         backgroundColor: AppColors.primaryColor,
                       ),
                       onPressed: () => Navigator.pop(ctx, true),
-                      child: const Text(
-                        'Clear',
+                      child: Text(
+                        l10n.clear,
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -70,13 +72,13 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
           }
           final items = history.items;
           if (items.isEmpty) {
-            return const Center(child: Text('No scans yet'));
+            return Center(child: Text(l10n.noScansYet));
           }
 
           final now = DateTime.now();
           bool isToday(DateTime t) =>
               t.year == now.year && t.month == now.month && t.day == now.day;
-          final display = _tab == 'All'
+          final display = _tab == 0
               ? items
               : items.where((e) => isToday(e.time)).toList();
 
@@ -92,15 +94,15 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
                 child: Row(
                   children: [
                     _FilterChip(
-                      label: 'All',
-                      selected: _tab == 'All',
-                      onTap: () => setState(() => _tab = 'All'),
+                      label: l10n.all,
+                      selected: _tab == 0,
+                      onTap: () => setState(() => _tab = 0),
                     ),
                     const SizedBox(width: 12),
                     _FilterChip(
-                      label: 'Today',
-                      selected: _tab == 'Today',
-                      onTap: () => setState(() => _tab = 'Today'),
+                      label: l10n.today,
+                      selected: _tab == 1,
+                      onTap: () => setState(() => _tab = 1),
                     ),
                   ],
                 ),
@@ -155,14 +157,14 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
                             Clipboard.setData(ClipboardData(text: item.value));
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: const Row(
+                                content: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.check_circle,
                                       color: Colors.white,
                                     ),
-                                    SizedBox(width: 12),
-                                    Text('Copied to clipboard'),
+                                    const SizedBox(width: 12),
+                                    Text(l10n.copiedToClipboard),
                                   ],
                                 ),
                                 backgroundColor: Colors.green,
@@ -212,7 +214,7 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            item.eventTitle ?? 'Unknown Event',
+                                            item.eventTitle ?? l10n.unknownEvent,
                                             style: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w600,
@@ -237,7 +239,7 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
                                       ),
                                     ),
                                     IconButton(
-                                      tooltip: 'Delete',
+                                      tooltip: l10n.delete,
                                       icon: Icon(
                                         Icons.delete_outline,
                                         color: Colors.red.shade400,
@@ -263,7 +265,7 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
                                   ),
                                   child: Row(
                                     children: [
-                                      Text('Ticket ID:'),
+                                      Text(l10n.ticketIdShort),
                                       const SizedBox(width: 8),
                                       Icon(
                                         Icons.confirmation_number_outlined,

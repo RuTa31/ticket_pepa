@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -184,6 +185,7 @@ class _QrScannerPageState extends State<QrScannerPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
     return Consumer<ScannerProvider>(
       builder: (context, scanner, _) {
         return Scaffold(
@@ -207,7 +209,7 @@ class _QrScannerPageState extends State<QrScannerPage> {
                   color: isDark ? Colors.white : Colors.black,
                 ),
                 onPressed: () => scanner.switchCamera(),
-                tooltip: 'Switch Camera',
+                tooltip: l10n.switchCamera,
               ),
               IconButton(
                 icon: Icon(
@@ -215,7 +217,7 @@ class _QrScannerPageState extends State<QrScannerPage> {
                   color: isDark ? Colors.white : Colors.black,
                 ),
                 onPressed: () => scanner.toggleTorch(),
-                tooltip: 'Toggle Torch',
+                tooltip: l10n.toggleTorch,
               ),
             ],
           ),

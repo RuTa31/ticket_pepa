@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../auth/providers/auth_provider.dart';
 import '../common/app_colors.dart';
@@ -133,6 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildBody(DashboardProvider dashboard, BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (dashboard.loading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -156,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ElevatedButton.icon(
                 onPressed: () => _loadData(context),
                 icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
+                label: Text(l10n.retry),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryColor,
                   foregroundColor: Colors.white,
@@ -169,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     if (!dashboard.hasData) {
-      return const Center(child: Text('No data available'));
+      return Center(child: Text(l10n.noDataAvailable));
     }
 
     return RefreshIndicator(
@@ -206,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
                   child: Text(
-                    'All tickets loaded',
+                    l10n.allTicketsLoaded,
                     style: TextStyle(color: Colors.grey.shade600),
                   ),
                 ),
@@ -219,6 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // --- FIX APPLIED HERE ---
   Widget _buildStatsCards(DashboardProvider dashboard) {
+    final l10n = AppLocalizations.of(context);
     final runningEvent = dashboard.currentRunningEvent;
     final upcomingEvent = dashboard.nextUpcomingEvent;
 
@@ -230,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Expanded(
                 child: _buildStatCard(
-                  'Total Events',
+                  l10n.totalEvents,
                   dashboard.dashboardData!.events.length.toString(),
                   Icons.confirmation_number_outlined,
                   Colors.blue,
@@ -239,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(width: 8),
               Expanded(
                 child: _buildStatCard(
-                  'Total Tickets',
+                  l10n.totalTickets,
                   dashboard.dashboardData!.totalAttendeesTickets.toString(),
                   Icons.check_circle_outline,
                   Colors.green,
@@ -313,7 +316,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final color = isRunning ? Colors.green : Colors.orange;
     final icon = isRunning ? Icons.play_circle_filled : Icons.schedule;
-    final label = isRunning ? 'Currently Running' : 'Upcoming Event';
+    final l10n = AppLocalizations.of(context);
+    final label = isRunning ? l10n.currentlyRunning : l10n.upcomingEvent;
 
     // Get date time info
     final startDateTime = dashboard.getEventStartDateTime(event);
@@ -481,8 +485,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Icon(Icons.event, size: 20, color: AppColors.primaryColor),
                   SizedBox(width: 12),
                   Text(
-                    'All Events',
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                    AppLocalizations.of(context).allEvents,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -526,6 +530,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildTabSelector(DashboardProvider dashboard) {
+    final l10n = AppLocalizations.of(context);
     final data = dashboard.dashboardData;
     if (data == null) return const SizedBox.shrink();
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -547,7 +552,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Expanded(
             child: _buildTabButton(
-              'All Tickets',
+              l10n.allTickets,
               0,
               dashboard.filteredAllCount,
               dashboard,
@@ -555,7 +560,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: _buildTabButton(
-              'Scanned',
+              l10n.scanned,
               1,
               dashboard.filteredScannedCount,
               dashboard,
@@ -563,7 +568,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: _buildTabButton(
-              'Unscanned',
+              l10n.unscanned,
               2,
               dashboard.filteredUnscannedCount,
               dashboard,
@@ -621,6 +626,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildTicketsList(DashboardProvider dashboard) {
+    final l10n = AppLocalizations.of(context);
     final tickets = dashboard.filteredTickets;
 
     if (tickets.isEmpty) {
@@ -630,15 +636,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
       switch (dashboard.selectedTab) {
         case 1: // Scanned
-          message = 'No scanned tickets';
+          message = l10n.noScannedTickets;
           icon = Icons.check_circle_outline;
           break;
         case 2: // Unscanned
-          message = 'No unscanned tickets';
+          message = l10n.noUnscannedTickets;
           icon = Icons.pending_outlined;
           break;
         default: // All
-          message = 'No tickets found';
+          message = l10n.noTicketsFound;
           icon = Icons.inbox_outlined;
       }
 
@@ -674,6 +680,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildTicketCard(BuildContext context, TicketData ticket) {
+    final l10n = AppLocalizations.of(context);
     final isScanned = ticket.isScanned;
     final statusColor = isScanned ? Colors.green : Colors.orange;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -754,7 +761,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Padding(
                     padding: const EdgeInsets.all(4),
                     child: Text(
-                      'Ticket ID: ${ticket.ticketId}',
+                      '${l10n.ticketIdLabel}${ticket.ticketId}',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey.shade500,
@@ -836,6 +843,7 @@ class _HomeScreenState extends State<HomeScreen> {
     TicketData ticket,
     String newStatus,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final auth = context.read<AuthProvider>();
     if (auth.token == null || auth.profile == null) return;
 
@@ -856,7 +864,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Icon(Icons.check_circle, color: Colors.white),
               const SizedBox(width: 12),
-              Text('Ticket status updated to ${newStatus.toUpperCase()}'),
+              Text(l10n.ticketStatusUpdated(newStatus.toUpperCase())),
             ],
           ),
           backgroundColor: Colors.green,
@@ -870,11 +878,11 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Row(
+          content: Row(
             children: [
-              Icon(Icons.error, color: Colors.white),
-              SizedBox(width: 12),
-              Text('Failed to update ticket status'),
+              const Icon(Icons.error, color: Colors.white),
+              const SizedBox(width: 12),
+              Text(l10n.failedToUpdateTicketStatus),
             ],
           ),
           backgroundColor: Colors.red,
@@ -889,6 +897,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showTicketDetails(BuildContext context, TicketData ticket) {
+    final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showModalBottomSheet(
@@ -906,8 +915,8 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Row(
               children: [
-                const Text(
-                  'Ticket Details',
+                Text(
+                  l10n.ticketDetails,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
@@ -918,17 +927,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             const Divider(height: 24),
-            _buildDetailRow('Event', ticket.eventName),
-            _buildDetailRow('Ticket Type', ticket.ticketName),
-            _buildDetailRow('Ticket ID', ticket.ticketId),
-            _buildDetailRow('Booking ID', ticket.bookingId),
-            _buildDetailRow('Customer Phone', ticket.customerPhone),
+            _buildDetailRow(l10n.event, ticket.eventName),
+            _buildDetailRow(l10n.ticketType, ticket.ticketName),
+            _buildDetailRow(l10n.ticketId, ticket.ticketId),
+            _buildDetailRow(l10n.bookingId, ticket.bookingId),
+            _buildDetailRow(l10n.customerPhone, ticket.customerPhone),
             _buildDetailRow(
-              'Payment Status',
+              l10n.paymentStatus,
               ticket.paymentStatus.toUpperCase(),
             ),
             _buildDetailRow(
-              'Scan Status',
+              l10n.scanStatus,
               ticket.scanStatus.toUpperCase(),
               valueColor: ticket.isScanned ? Colors.green : Colors.orange,
             ),
