@@ -524,6 +524,30 @@ class ApiClient {
     }
   }
 
+  /// Check whether a stored token is still active on the server.
+  ///
+  /// Returns true if [active] is true in the response.
+  /// Returns false if the server explicitly says inactive.
+  /// Throws on network/parse errors so callers can decide how to handle.
+  Future<bool> checkToken(String token) async {
+    final uri = Uri.parse('$apiBaseUrl/');
+    final resp = await _client.post(
+      uri,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({'op': 'check_token', 'token': token}),
+    );
+
+    if (resp.statusCode != 200) {
+      throw Exception('check_token failed: ${resp.statusCode}');
+    }
+
+    final data = json.decode(resp.body) as Map<String, dynamic>;
+    return data['ok'] == true && data['active'] == true;
+  }
+
   /// Fetch sales events list with plans.
   Future<List<SalesEvent>> getSalesEvents({
     required String token,

@@ -56,6 +56,30 @@ class AuthProvider extends ChangeNotifier {
         _profile = null;
       }
     }
+
+    // Validate token with server if we think we're logged in
+    if (_loggedIn && _token != null) {
+      print('🔍 AuthProvider: Validating token with server...');
+      try {
+        final isActive = await _api.checkToken(_token!);
+        if (!isActive) {
+          print('❌ AuthProvider: Token is inactive — clearing session');
+          await prefs.remove(_keyLoggedIn);
+          await prefs.remove(_keyToken);
+          await prefs.remove(_keyRole);
+          await prefs.remove(_keyProfile);
+          _loggedIn = false;
+          _token = null;
+          _profile = null;
+        } else {
+          print('✅ AuthProvider: Token is active');
+        }
+      } catch (e) {
+        // Network error — assume token is still valid to avoid offline lockout
+        print('⚠️ AuthProvider: Token check failed (network?): $e — keeping session');
+      }
+    }
+
     _loaded = true;
     print('✅ AuthProvider: Load complete');
     notifyListeners();
