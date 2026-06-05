@@ -30,17 +30,20 @@ class _MainNavScreenState extends State<MainNavScreen> {
     if (_index == 0 && widget.initialTab == 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final auth = context.read<AuthProvider>();
-        if (auth.token != null && auth.profile != null) {
-          context.read<DashboardProvider>().loadData(
-            token: auth.token!,
-            role: auth.profile!.role,
-          );
+        if (auth.token != null) {
+          context.read<DashboardProvider>().loadData(token: auth.token!);
         }
       });
     }
   }
 
   void _onTabChanged(int newIndex) {
+    if (newIndex == 0 && _index != 0) {
+      final auth = context.read<AuthProvider>();
+      if (auth.token != null) {
+        context.read<DashboardProvider>().loadData(token: auth.token!);
+      }
+    }
     setState(() => _index = newIndex);
   }
 

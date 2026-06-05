@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../auth/providers/auth_provider.dart';
 import '../services/api_client.dart';
-import '../common/network_app_logo.dart';
+
 import '../common/app_colors.dart';
 import '../settings/settings_screen.dart';
 import '../history/scan_history_provider.dart';
@@ -104,7 +104,7 @@ class ProfileScreen extends StatelessWidget {
                       await context.read<ScanHistoryProvider>().clear();
                       // Clear dashboard cache
                       if (context.mounted) {
-                        context.read<DashboardProvider>().clearData();
+                        context.read<DashboardProvider>().reset();
                       }
                       // Logout
                       if (context.mounted) {
@@ -135,9 +135,7 @@ class _ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final name = profile?.displayName ?? l10n.guestUser;
-    final email = profile?.email ?? '-';
-    final role = profile?.role.name ?? 'guest';
-    final photoUrl = profile?.photoUrl;
+    final photoUrl = null;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Card(
@@ -179,7 +177,7 @@ class _ProfileCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(99),
                     ),
                     child: Text(
-                      role.toUpperCase(),
+                      profile?.username.toUpperCase() ?? 'SCANNER',
                       style: TextStyle(
                         color: isDark ? AppColors.primaryColor : Colors.white,
                         fontSize: 11,

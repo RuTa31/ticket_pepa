@@ -1,27 +1,35 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
-import 'package:flutter/services.dart';
-import 'package:share_plus/share_plus.dart';
 import '../common/app_colors.dart';
+import '../home/models/dashboard_models.dart';
 
 class QrResultScreen extends StatefulWidget {
   final String value;
-  final String? apiMessage;
-  final String? alertType;
-  final String? bookingId;
-  final String? scannedAt;
-  final String? scannedByName;
-  final String? scannedByUser;
+  final String? status;       // "accepted" | "duplicate" | "invalid" | "wrong_event"
+  final String? message;
+  final bool accepted;
+  final String? ticketCode;
+  final String? ticketEvent;
+  final String? ticketPlan;
+  final int? scanCount;
+  final String? firstScannedBy;
+  final int? firstScannedAt;  // Unix timestamp
+  final ScanCustomForm? customForm;
+
   const QrResultScreen({
     super.key,
     required this.value,
-    this.apiMessage,
-    this.alertType,
-    this.bookingId,
-    this.scannedAt,
-    this.scannedByName,
-    this.scannedByUser,
+    this.status,
+    this.message,
+    this.accepted = false,
+    this.ticketCode,
+    this.ticketEvent,
+    this.ticketPlan,
+    this.scanCount,
+    this.firstScannedBy,
+    this.firstScannedAt,
+    this.customForm,
   });
 
   @override
@@ -35,6 +43,10 @@ class _QrResultScreenState extends State<QrResultScreen>
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
   late Animation<double> _checkAnimation;
+
+  bool get isAccepted => widget.status == 'accepted';
+  bool get isDuplicate => widget.status == 'duplicate';
+  bool get isWrongEvent => widget.status == 'wrong_event';
 
   @override
   void initState() {
@@ -60,11 +72,8 @@ class _QrResultScreenState extends State<QrResultScreen>
       curve: Curves.easeInOut,
     );
     _animationController.forward();
-    // Start check animation after scale animation
     Future.delayed(const Duration(milliseconds: 400), () {
-      if (mounted) {
-        _checkAnimationController.forward();
-      }
+      if (mounted) _checkAnimationController.forward();
     });
   }
 
@@ -75,28 +84,34 @@ class _QrResultScreenState extends State<QrResultScreen>
     super.dispose();
   }
 
+  Color get _accentColor {
+    if (isAccepted) return Colors.green;
+    if (isDuplicate) return Colors.orange.shade700;
+    return Colors.red.shade700;
+  }
+
+  String get _titleText {
+    if (isAccepted) return 'БИЛЕТ БАТАЛГААЖЛАА';
+    if (isDuplicate) return 'АЛЬ ХЭДИЙН УНШИГДСАН';
+    if (isWrongEvent) return 'БУРУУ АРГА ХЭМЖЭЭ';
+    return 'ХҮЧИНГҮЙ БИЛЕТ';
+  }
+
+  String _fmtTimestamp(int ts) {
+    final dt = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
+    final y = dt.year;
+    final mo = dt.month.toString().padLeft(2, '0');
+    final d = dt.day.toString().padLeft(2, '0');
+    final h = dt.hour.toString().padLeft(2, '0');
+    final mi = dt.minute.toString().padLeft(2, '0');
+    return '$y.$mo.$d $h:$mi';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
-    final success = (widget.alertType?.toLowerCase() == 'success');
-    final alreadyScanned =
-        (widget.apiMessage?.toLowerCase().contains('already') == true);
-    final am = widget.apiMessage?.trim();
-    final showMsg = (am != null && am.isNotEmpty);
-    final titleText = showMsg
-        ? (success
-              ? l10n.ticketVerified
-              : alreadyScanned
-              ? l10n.ticketAlreadyScanned
-              : am.toLowerCase() == 'you do not have permission'
-              ? am.toUpperCase()
-              : 'TICKET ${am.toUpperCase()}')
-        : l10n.codeScanned;
-
-    final accentColor = success
-        ? Colors.green
-        : (showMsg ? Colors.red.shade700 : Colors.blue);
+    final accentColor = _accentColor;
 
     return Scaffold(
       backgroundColor: isDark ? Colors.grey.shade900 : Colors.white,
@@ -110,10 +125,7 @@ class _QrResultScreenState extends State<QrResultScreen>
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(
-              Icons.history,
-              color: isDark ? Colors.white : Colors.black,
-            ),
+            icon: Icon(Icons.history, color: isDark ? Colors.white : Colors.black),
             tooltip: l10n.history,
             onPressed: () => Navigator.of(context).pushNamed('/history'),
           ),
@@ -126,7 +138,7 @@ class _QrResultScreenState extends State<QrResultScreen>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 16),
-              // Animated Icon
+              // Animated icon
               ScaleTransition(
                 scale: _scaleAnimation,
                 child: FadeTransition(
@@ -134,24 +146,20 @@ class _QrResultScreenState extends State<QrResultScreen>
                   child: SizedBox(
                     width: 140,
                     height: 140,
-                    child: showMsg && success
+                    child: isAccepted
                         ? Stack(
                             alignment: Alignment.center,
                             children: [
-                              // Animated circular progress background
                               AnimatedBuilder(
                                 animation: _checkAnimation,
-                                builder: (context, child) {
-                                  return CustomPaint(
-                                    size: const Size(140, 140),
-                                    painter: _CircularProgressPainter(
-                                      progress: _checkAnimation.value,
-                                      color: accentColor,
-                                    ),
-                                  );
-                                },
+                                builder: (context, child) => CustomPaint(
+                                  size: const Size(140, 140),
+                                  painter: _CircularProgressPainter(
+                                    progress: _checkAnimation.value,
+                                    color: accentColor,
+                                  ),
+                                ),
                               ),
-                              // Gradient background circle
                               Container(
                                 width: 110,
                                 height: 110,
@@ -174,14 +182,9 @@ class _QrResultScreenState extends State<QrResultScreen>
                                   ],
                                 ),
                               ),
-                              // Animated verified icon (shield + checkmark)
                               ScaleTransition(
                                 scale: _checkAnimation,
-                                child: Icon(
-                                  Icons.verified_rounded,
-                                  size: 80,
-                                  color: accentColor,
-                                ),
+                                child: Icon(Icons.verified_rounded, size: 80, color: accentColor),
                               ),
                             ],
                           )
@@ -207,9 +210,9 @@ class _QrResultScreenState extends State<QrResultScreen>
                               ],
                             ),
                             child: Icon(
-                              showMsg
+                              isDuplicate
                                   ? Icons.warning_amber_rounded
-                                  : Icons.qr_code_2_rounded,
+                                  : Icons.cancel_rounded,
                               size: 90,
                               color: accentColor,
                             ),
@@ -218,269 +221,153 @@ class _QrResultScreenState extends State<QrResultScreen>
                 ),
               ),
               const SizedBox(height: 16),
-              // Title
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: Text(
-                  titleText,
+                  _titleText,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: isDark ? Colors.white : Colors.black87,
                     letterSpacing: 0.5,
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-              // Status Card
-              if (showMsg)
+              const SizedBox(height: 8),
+              if (widget.message != null && widget.message!.isNotEmpty)
                 FadeTransition(
                   opacity: _fadeAnimation,
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          accentColor.withValues(alpha: 0.15),
-                          accentColor.withValues(alpha: 0.05),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: accentColor.withValues(alpha: 0.3),
-                        width: 2,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: accentColor.withValues(alpha: 0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+                  child: Text(
+                    widget.message!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                ),
+              const SizedBox(height: 20),
+              // Ticket info card (for accepted + duplicate)
+              if ((isAccepted || isDuplicate) &&
+                  (widget.ticketEvent != null || widget.ticketPlan != null))
+                FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: _infoCard(
+                    accentColor: accentColor,
+                    isDark: isDark,
+                    children: [
+                      if (widget.ticketEvent != null)
+                        _infoRow(Icons.event, 'Арга хэмжээ', widget.ticketEvent!, isDark),
+                      if (widget.ticketPlan != null)
+                        _infoRow(Icons.label_outline, 'Тасалбарын төрөл', widget.ticketPlan!, isDark),
+                      if (widget.ticketCode != null)
+                        _infoRow(Icons.confirmation_number_outlined, 'Код', widget.ticketCode!, isDark),
+                    ],
+                  ),
+                ),
+              // Duplicate info card
+              if (isDuplicate &&
+                  (widget.scanCount != null || widget.firstScannedBy != null))
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: _infoCard(
+                      accentColor: Colors.red.shade700,
+                      isDark: isDark,
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: accentColor.withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Icon(
-                                success
-                                    ? Icons.verified_rounded
-                                    : Icons.warning_rounded,
-                                color: accentColor,
-                                size: 28,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                success ? l10n.verified : l10n.alert,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: accentColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          am.toLowerCase() == 'unverified'
-                              ? l10n.fakeOrUnauthorizedTicket
-                              : '${am.toLowerCase() == 'you do not have permission' ? '' : 'TICKET'} ${am.toUpperCase()}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: isDark ? Colors.white : Colors.black87,
-                            height: 1.4,
+                        if (widget.scanCount != null)
+                          _infoRow(
+                            Icons.repeat,
+                            'Нийт уншсан тоо',
+                            '${widget.scanCount} удаа',
+                            isDark,
                           ),
-                        ),
-                        if (widget.bookingId != null &&
-                            widget.bookingId!.isNotEmpty) ...[
-                          const SizedBox(height: 12),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? Colors.grey.shade800
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.confirmation_number_outlined,
-                                  size: 18,
-                                  color: Colors.grey.shade600,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    'Booking: ${widget.bookingId!.contains('_') ? widget.bookingId!.split('_').first : widget.bookingId}',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: isDark
-                                          ? Colors.white70
-                                          : Colors.grey.shade700,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                        if (widget.firstScannedBy != null)
+                          _infoRow(
+                            Icons.person_outline,
+                            'Анх уншсан',
+                            widget.firstScannedBy!,
+                            isDark,
                           ),
-                        ],
-                        // Show scanned info if already scanned
-                        if (widget.scannedAt != null ||
-                            widget.scannedByName != null) ...[
-                          const SizedBox(height: 12),
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? Colors.grey.shade800.withValues(alpha: 0.5)
-                                  : Colors.red.shade50,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: Colors.red.shade300,
-                                width: 1,
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (widget.scannedByName != null) ...[
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.person_outline,
-                                        size: 18,
-                                        color: Colors.red.shade700,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          'Scanned by: ${widget.scannedByName}',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: isDark
-                                                ? Colors.white
-                                                : Colors.red.shade900,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                                if (widget.scannedAt != null) ...[
-                                  if (widget.scannedByName != null)
-                                    const SizedBox(height: 8),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.access_time,
-                                        size: 18,
-                                        color: Colors.red.shade700,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          'Scanned at: ${widget.scannedAt}',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                            color: isDark
-                                                ? Colors.white70
-                                                : Colors.red.shade800,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ],
-                            ),
+                        if (widget.firstScannedAt != null)
+                          _infoRow(
+                            Icons.access_time,
+                            'Анх уншсан цаг',
+                            _fmtTimestamp(widget.firstScannedAt!),
+                            isDark,
                           ),
-                        ],
                       ],
                     ),
                   ),
                 ),
-              if (showMsg) const SizedBox(height: 8),
-              // QR Code Value Card
+              // Custom form card
+              if (widget.customForm != null && widget.customForm!.fields.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: _infoCard(
+                      accentColor: Colors.blue.shade600,
+                      isDark: isDark,
+                      headerLabel: widget.customForm!.name,
+                      children: widget.customForm!.fields
+                          .map((f) => _infoRow(Icons.info_outline, f.label, f.value, isDark))
+                          .toList(),
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 20),
+              // QR code value card
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: isDark ? Colors.grey.shade800 : Colors.white,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.qr_code_2,
-                            color: AppColors.primaryColor,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
+                          Icon(Icons.qr_code_2, color: AppColors.primaryColor, size: 18),
+                          const SizedBox(width: 6),
                           Text(
                             l10n.qrCodeData,
                             style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: isDark
-                                  ? Colors.white
-                                  : Colors.grey.shade800,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: isDark ? Colors.white : Colors.grey.shade800,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 10),
                       Container(
-                        alignment: Alignment.center,
                         width: double.infinity,
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: isDark
-                              ? Colors.grey.shade900
-                              : Colors.grey.shade50,
-                          borderRadius: BorderRadius.circular(12),
+                          color: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Colors.grey.shade300),
                         ),
                         child: SelectableText(
                           widget.value,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 13,
                             fontFamily: 'monospace',
                             color: isDark ? Colors.white70 : Colors.black87,
-                            height: 1.5,
                           ),
                         ),
                       ),
@@ -489,7 +376,6 @@ class _QrResultScreenState extends State<QrResultScreen>
                 ),
               ),
               const SizedBox(height: 24),
-              const SizedBox(height: 12),
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: ElevatedButton.icon(
@@ -505,7 +391,7 @@ class _QrResultScreenState extends State<QrResultScreen>
                   icon: const Icon(Icons.qr_code_scanner_rounded, size: 24),
                   label: Text(
                     l10n.scanAgain,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   onPressed: () => Navigator.of(context).pop(true),
                 ),
@@ -528,7 +414,7 @@ class _QrResultScreenState extends State<QrResultScreen>
                   icon: const Icon(Icons.home_rounded, size: 24),
                   label: Text(
                     l10n.backToHome,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   onPressed: () {
                     Navigator.of(context).pushNamedAndRemoveUntil(
@@ -539,6 +425,7 @@ class _QrResultScreenState extends State<QrResultScreen>
                   },
                 ),
               ),
+              const SizedBox(height: 16),
             ],
           ),
         ),
@@ -546,33 +433,84 @@ class _QrResultScreenState extends State<QrResultScreen>
     );
   }
 
-  Widget _buildActionButton({
-    required IconData icon,
-    required String label,
+  Widget _infoCard({
+    required Color accentColor,
     required bool isDark,
-    required VoidCallback onPressed,
+    required List<Widget> children,
+    String? headerLabel,
   }) {
-    return OutlinedButton.icon(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: isDark ? Colors.white : Colors.black87,
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        side: BorderSide(
-          color: isDark ? Colors.white30 : Colors.grey.shade300,
-          width: 2,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            accentColor.withValues(alpha: 0.12),
+            accentColor.withValues(alpha: 0.04),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: accentColor.withValues(alpha: 0.3), width: 1.5),
       ),
-      icon: Icon(icon, size: 20),
-      label: Text(
-        label,
-        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (headerLabel != null) ...[
+            Text(
+              headerLabel,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: accentColor,
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Divider(height: 1),
+            const SizedBox(height: 10),
+          ],
+          ...children,
+        ],
       ),
-      onPressed: onPressed,
+    );
+  }
+
+  Widget _infoRow(IconData icon, String label, String value, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 16, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
+                  ),
+                ),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: isDark ? Colors.white : Colors.grey.shade900,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-// Custom painter for circular progress animation
 class _CircularProgressPainter extends CustomPainter {
   final double progress;
   final Color color;
@@ -584,14 +522,12 @@ class _CircularProgressPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;
 
-    // Draw background circle (subtle)
     final bgPaint = Paint()
       ..color = color.withValues(alpha: 0.1)
       ..strokeWidth = 4
       ..style = PaintingStyle.stroke;
     canvas.drawCircle(center, radius - 2, bgPaint);
 
-    // Draw animated progress arc
     if (progress > 0) {
       final progressPaint = Paint()
         ..color = color
@@ -602,29 +538,26 @@ class _CircularProgressPainter extends CustomPainter {
       final sweepAngle = 2 * 3.141592653589793 * progress;
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius - 2),
-        -3.141592653589793 / 2, // Start from top
+        -3.141592653589793 / 2,
         sweepAngle,
         false,
         progressPaint,
       );
 
-      // Add animated dots at the end of progress
       if (progress < 1.0) {
         final dotAngle = -3.141592653589793 / 2 + sweepAngle;
         final dotX = center.dx + (radius - 2) * cos(dotAngle);
         final dotY = center.dy + (radius - 2) * sin(dotAngle);
-
-        final dotPaint = Paint()
-          ..color = color
-          ..style = PaintingStyle.fill;
-
-        canvas.drawCircle(Offset(dotX, dotY), 4, dotPaint);
+        canvas.drawCircle(
+          Offset(dotX, dotY),
+          4,
+          Paint()..color = color..style = PaintingStyle.fill,
+        );
       }
     }
   }
 
   @override
-  bool shouldRepaint(_CircularProgressPainter oldDelegate) {
-    return oldDelegate.progress != progress;
-  }
+  bool shouldRepaint(_CircularProgressPainter oldDelegate) =>
+      oldDelegate.progress != progress;
 }

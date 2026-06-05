@@ -18,7 +18,11 @@ class SalesProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _events = await _api.getSalesEvents(token: token);
+      // Use dashboard endpoint — no dedicated sales events list in new API
+      final dashboard = await _api.getDashboard(token: token);
+      _events = dashboard.events
+          .map((e) => SalesEvent.fromDashboardEvent(e))
+          .toList();
       _error = null;
     } catch (e) {
       _error = e.toString().replaceFirst('Exception: ', '');

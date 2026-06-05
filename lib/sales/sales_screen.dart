@@ -138,7 +138,10 @@ class _SalesScreenState extends State<SalesScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => EventPlansScreen(event: event),
+              builder: (_) => EventPlansScreen(
+              eventId: event.id,
+              eventName: event.name,
+            ),
             ),
           );
         },
@@ -187,25 +190,24 @@ class _SalesScreenState extends State<SalesScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 6),
-                    if (event.plans.isNotEmpty)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          '${event.plans.length} plan${event.plans.length > 1 ? 's' : ''}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primaryColor,
-                          ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        'Тасалбар авах',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryColor,
                         ),
                       ),
+                    ),
                   ],
                 ),
               ),

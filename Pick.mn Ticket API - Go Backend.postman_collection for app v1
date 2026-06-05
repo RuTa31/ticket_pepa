@@ -1,0 +1,1089 @@
+{
+  "info": {
+    "_postman_id": "6d1c2942-f700-4cde-91fc-898f0a09f685",
+    "name": "Pick.mn Ticket API - Go Backend",
+    "description": "Import-ready Postman collection for the current Go ticketing backend. Covers public pages, internal web API, third-party JWT API, scanner mobile app API, payment callbacks, admin utility endpoints, and legacy aliases. Default base_url is local development; switch base_url to https://pick.mn or the API host when deployed.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "30800838"
+  },
+  "item": [
+    {
+      "name": "Scanner App API (/api/v1/scanner)",
+      "item": [
+        {
+          "name": "Staff login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{staff_username}}\",\n  \"password\": \"{{staff_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/scanner/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scanner",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticate a staff scanner account and store scanner_token. Staff accounts come from Admin > Staff."
+          },
+          "response": [
+            {
+              "name": "Staff login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"bold\",\n  \"password\": \"1234\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scanner/auth/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scanner",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "qwUxgGMXyMCkflnJbzvCKhcGEHDDrpaO"
+                },
+                {
+                  "key": "X-Xss-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 04 Jun 2026 10:51:24 GMT"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "436"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"expires_at\": 1780613484,\n    \"staff\": {\n        \"event_ids\": [\n            4\n        ],\n        \"id\": 3,\n        \"name\": \"Болдоо\",\n        \"username\": \"bold\"\n    },\n    \"status\": \"success\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGFmZl9pZCI6MywidXNlcm5hbWUiOiJib2xkIiwibmFtZSI6ItCR0L7Qu9C00L7QviIsImlzcyI6InBpY2subW4vc2Nhbm5lciIsInN1YiI6IjMiLCJleHAiOjE3ODA2MTM0ODQsImlhdCI6MTc4MDU3MDI4NCwianRpIjoid210YmRpWGZrRU44RkVUNlppazJ3USJ9.87Z4zcynYyuhz5MnquKXaZXlMV0jJelJwIClXyWEa-w\",\n    \"token_type\": \"Bearer\"\n}"
+            },
+            {
+              "name": "Staff login - inactive",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"bold\",\n  \"password\": \"1234\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scanner/auth/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scanner",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "wfozxryJynUuHSogIlxaTICwKTXPmAHE"
+                },
+                {
+                  "key": "X-Xss-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 04 Jun 2026 11:37:34 GMT"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "57"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"message\": \"staff account is inactive\",\n    \"status\": \"error\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Current staff profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{scanner_token}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/scanner/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scanner",
+                "me"
+              ]
+            },
+            "description": "Return the authenticated staff profile and a lightweight selector list: assigned events contain only id/name and plans contain only id/name. Use GET /api/v1/scanner/events/:event_id for full details and scan statistics."
+          },
+          "response": [
+            {
+              "name": "Current staff profile",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{scanner_token}}"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scanner/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scanner",
+                    "me"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "EaNqljqysuVFbgMKuFHwIYmIydbLzBzl"
+                },
+                {
+                  "key": "X-Xss-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 04 Jun 2026 10:52:43 GMT"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "149"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"staff\": {\n        \"events\": [\n            {\n                \"id\": 4,\n                \"name\": \"sm1\",\n                \"plans\": [\n                    {\n                        \"id\": 7,\n                        \"name\": \"open door\"\n                    }\n                ]\n            }\n        ],\n        \"id\": 3,\n        \"name\": \"Болдоо\",\n        \"username\": \"bold\"\n    },\n    \"status\": \"success\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Scanner dashboard",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{scanner_token}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/scanner/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scanner",
+                "dashboard"
+              ]
+            },
+            "description": "Personal scanner dashboard for the authenticated staff user. It intentionally does not return venue-wide tickets_total or all-staff scan counts. Events and plans include id/name plus scanned_tickets_by_me and scan_logs_by_me only."
+          },
+          "response": [
+            {
+              "name": "Scanner dashboard",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{scanner_token}}"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scanner/dashboard",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scanner",
+                    "dashboard"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "WePXDljXXeGaUeTnIkEiWPCOGOeIkDlG"
+                },
+                {
+                  "key": "X-Xss-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 04 Jun 2026 10:53:04 GMT"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "371"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"events\": [\n        {\n            \"duplicate_scans_by_me\": 0,\n            \"id\": 4,\n            \"name\": \"sm1\",\n            \"plans\": [\n                {\n                    \"id\": 7,\n                    \"name\": \"open door\",\n                    \"scan_logs_by_me\": 0,\n                    \"scanned_tickets_by_me\": 0\n                }\n            ],\n            \"scan_logs_by_me\": 0,\n            \"scanned_tickets_by_me\": 0\n        }\n    ],\n    \"staff\": {\n        \"id\": 3,\n        \"name\": \"Болдоо\",\n        \"username\": \"bold\"\n    },\n    \"status\": \"success\",\n    \"summary\": {\n        \"assigned_events\": 1,\n        \"duplicate_scans_by_me\": 0,\n        \"scan_logs_by_me\": 0,\n        \"scanned_tickets_by_me\": 0\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Event detail with ticket types",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{scanner_token}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/scanner/events/{{scanner_event_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scanner",
+                "events",
+                "{{scanner_event_id}}"
+              ]
+            },
+            "description": "Return one assigned event with its ticket types/plans and scan statistics."
+          },
+          "response": [
+            {
+              "name": "Event detail with ticket types",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{scanner_token}}"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scanner/events/{{scanner_event_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scanner",
+                    "events",
+                    "{{scanner_event_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "uRqwvqlejIcGPZjkonBwEYhbGCYZKiVj"
+                },
+                {
+                  "key": "X-Xss-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 04 Jun 2026 10:53:41 GMT"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "529"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"event\": {\n        \"end_date\": 1783684800,\n        \"event_date\": 1780250400,\n        \"id\": 4,\n        \"name\": \"sm1\",\n        \"picture\": \"https://ticketmn.b-cdn.net/event/main/event/main-sgel87x2.jpg\",\n        \"plans\": [\n            {\n                \"base_price\": 100,\n                \"currency\": \"MNT\",\n                \"id\": 7,\n                \"is_active\": 1,\n                \"is_continuous\": true,\n                \"name\": \"open door\",\n                \"name_en\": \"\",\n                \"price\": 100,\n                \"quantity_sold\": 3,\n                \"quantity_total\": 0,\n                \"scanned_tickets\": 0,\n                \"tickets_total\": 6\n            }\n        ],\n        \"scan_logs\": 0,\n        \"scanned_tickets\": 0,\n        \"slug\": \"sm1\",\n        \"tickets_total\": 6,\n        \"title\": \"sm1\",\n        \"title_en\": \"\",\n        \"venue\": \"Хотын гаалийн баруун талд\"\n    },\n    \"status\": \"success\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Scan ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{scanner_token}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"{{scanner_ticket_code}}\",\n  \"device_id\": \"postman-scanner\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/scanner/tickets/scan",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scanner",
+                "tickets",
+                "scan"
+              ]
+            },
+            "description": "Scan by ticket code. Response says accepted, duplicate, invalid, or wrong_event; duplicate responses include when/by whom/how many times plus full logs. If the ticket belongs to a custom form order, custom_form_responses is returned."
+          },
+          "response": [
+            {
+              "name": "Scan ticket",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{scanner_token}}"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"{{scanner_ticket_code}}\",\n  \"device_id\": \"postman-scanner\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scanner/tickets/scan",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scanner",
+                    "tickets",
+                    "scan"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "nKDxgQWNDjpkBXHnSkwwgKQYPrWFXAgm"
+                },
+                {
+                  "key": "X-Xss-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 04 Jun 2026 11:38:41 GMT"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"accepted\": false,\n    \"custom_form\": {\n        \"fields\": [\n            {\n                \"field_id\": 6,\n                \"label\": \"Төрсөн өдөр\",\n                \"label_en\": \"\",\n                \"type\": \"date\",\n                \"value\": \"2026-06-12\"\n            },\n            {\n                \"field_id\": 7,\n                \"label\": \"Нэмэлт дугаар\",\n                \"label_en\": \"\",\n                \"type\": \"phone\",\n                \"value\": \"54654\"\n            },\n            {\n                \"field_id\": 8,\n                \"label\": \"Идэх хоол\",\n                \"label_en\": \"\",\n                \"type\": \"checkbox\",\n                \"value\": \"[\\\"Бүргэр\\\"]\"\n            }\n        ],\n        \"form_id\": 3,\n        \"name\": \"nemelt\"\n    },\n    \"message\": \"ticket already scanned\",\n    \"scan\": {\n        \"accepted_count\": 1,\n        \"first_scanned_at\": 1780571110,\n        \"first_staff\": {\n            \"id\": 3,\n            \"name\": \"Болдоо\",\n            \"username\": \"bold\"\n        },\n        \"last_scanned_at\": 1780571110,\n        \"last_staff\": {\n            \"id\": 3,\n            \"name\": \"Болдоо\",\n            \"username\": \"bold\"\n        },\n        \"scan_count\": 7,\n        \"scanned\": true\n    },\n    \"scan_logs\": [\n        {\n            \"device_id\": \"postman-scanner\",\n            \"id\": 3,\n            \"message\": \"ticket scanned\",\n            \"scanned_at\": 1780571110,\n            \"source\": \"manual\",\n            \"staff\": {\n                \"id\": 3,\n                \"name\": \"Болдоо\",\n                \"username\": \"bold\"\n            },\n            \"status\": \"accepted\"\n        },\n        {\n            \"device_id\": \"postman-scanner\",\n            \"id\": 4,\n            \"message\": \"ticket already scanned\",\n            \"scanned_at\": 1780572483,\n            \"source\": \"manual\",\n            \"staff\": {\n                \"id\": 3,\n                \"name\": \"Болдоо\",\n                \"username\": \"bold\"\n            },\n            \"status\": \"duplicate\"\n        },\n        {\n            \"device_id\": \"postman-scanner\",\n            \"id\": 5,\n            \"message\": \"ticket already scanned\",\n            \"scanned_at\": 1780572484,\n            \"source\": \"manual\",\n            \"staff\": {\n                \"id\": 3,\n                \"name\": \"Болдоо\",\n                \"username\": \"bold\"\n            },\n            \"status\": \"duplicate\"\n        },\n        {\n            \"device_id\": \"postman-scanner\",\n            \"id\": 6,\n            \"message\": \"ticket already scanned\",\n            \"scanned_at\": 1780572485,\n            \"source\": \"manual\",\n            \"staff\": {\n                \"id\": 3,\n                \"name\": \"Болдоо\",\n                \"username\": \"bold\"\n            },\n            \"status\": \"duplicate\"\n        },\n        {\n            \"device_id\": \"postman-scanner\",\n            \"id\": 7,\n            \"message\": \"ticket already scanned\",\n            \"scanned_at\": 1780572499,\n            \"source\": \"manual\",\n            \"staff\": {\n                \"id\": 3,\n                \"name\": \"Болдоо\",\n                \"username\": \"bold\"\n            },\n            \"status\": \"duplicate\"\n        },\n        {\n            \"device_id\": \"postman-scanner\",\n            \"id\": 8,\n            \"message\": \"ticket already scanned\",\n            \"scanned_at\": 1780572500,\n            \"source\": \"manual\",\n            \"staff\": {\n                \"id\": 3,\n                \"name\": \"Болдоо\",\n                \"username\": \"bold\"\n            },\n            \"status\": \"duplicate\"\n        },\n        {\n            \"device_id\": \"postman-scanner\",\n            \"id\": 9,\n            \"message\": \"ticket already scanned\",\n            \"scanned_at\": 1780573121,\n            \"source\": \"manual\",\n            \"staff\": {\n                \"id\": 3,\n                \"name\": \"Болдоо\",\n                \"username\": \"bold\"\n            },\n            \"status\": \"duplicate\"\n        }\n    ],\n    \"status\": \"duplicate\",\n    \"ticket\": {\n        \"code\": \"TU45-YUCU-APMA-DZFG\",\n        \"created_at\": 1780570971,\n        \"email\": \"enkhelmo@gmail.com\",\n        \"event\": \"sm1\",\n        \"event_id\": 4,\n        \"id\": 67,\n        \"order_id\": 70,\n        \"pay_id\": \"b680c15a3d4f42886946eb1a3bbe77937d46a598aa7dc016b46dae21119b8254\",\n        \"plan\": \"open door\",\n        \"plan_id\": 7,\n        \"status\": \"used\",\n        \"updated_at\": 1780571110\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create staff QPay invoice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{scanner_token}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event_id\": {{scanner_event_id}},\n  \"plan_id\": {{scanner_plan_id}},\n  \"qty\": {{scanner_qty}},\n  \"email\": \"{{scanner_customer_email}}\",\n  \"phone\": \"{{scanner_customer_phone}}\",\n  \"device_id\": \"postman-scanner\",\n  \"redirect_uri\": \"{{base_url}}/paid\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/scanner/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scanner",
+                "orders"
+              ]
+            },
+            "description": "Staff chooses event + ticket type, enters quantity and customer email, optional phone, then creates a QPay checkout. The returned payment_url can be opened for the customer."
+          },
+          "response": [
+            {
+              "name": "Create staff QPay invoice",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{scanner_token}}"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"event_id\": {{scanner_event_id}},\n  \"plan_id\": {{scanner_plan_id}},\n  \"qty\": {{scanner_qty}},\n  \"email\": \"{{scanner_customer_email}}\",\n  \"phone\": \"{{scanner_customer_phone}}\",\n  \"device_id\": \"postman-scanner\",\n  \"redirect_uri\": \"{{base_url}}/paid\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scanner/orders",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scanner",
+                    "orders"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "xuCivAWixCdRNtgDRzaYqxVytZSKzktT"
+                },
+                {
+                  "key": "X-Xss-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 04 Jun 2026 11:06:07 GMT"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"auto_scan\": true,\n    \"order\": {\n        \"order_id\": 71,\n        \"amount\": 100,\n        \"created_at\": 1780571166,\n        \"pay_id\": \"335456d78f59a536872eac1262778916968897ea3c60cd0f883da1ba2e088bd0\",\n        \"payment_gateways\": {\n            \"hipay\": {\n                \"status\": \"failed\",\n                \"error\": \"HiPay credentials missing\"\n            },\n            \"qpay\": {\n                \"status\": \"success\",\n                \"qr_image\": \"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\",\n                \"deep_link\": \"qpaywallet://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\"\n            }\n        }\n    },\n    \"payment\": {\n        \"order\": {\n            \"currency\": \"MNT\",\n            \"order_id\": 71,\n            \"status\": \"pending\",\n            \"total_amount\": 100\n        },\n        \"qpay\": {\n            \"banks\": [\n                {\n                    \"description\": \"qPay хэтэвч\",\n                    \"link\": \"qpaywallet://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://s3.qpay.mn/p/e9bbdc69-3544-4c2f-aff0-4c292bc094f6/launcher-icon-ios.jpg\",\n                    \"name\": \"qPay wallet\"\n                },\n                {\n                    \"description\": \"Хаан банк\",\n                    \"link\": \"khanbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/khanbank.png\",\n                    \"name\": \"Khan bank\"\n                },\n                {\n                    \"description\": \"Төрийн банк 3.0\",\n                    \"link\": \"statebankmongolia://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/state_3.png\",\n                    \"name\": \"State bank 3.0\"\n                },\n                {\n                    \"description\": \"Хас банк\",\n                    \"link\": \"xacbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/xacbank.png\",\n                    \"name\": \"Xac bank\"\n                },\n                {\n                    \"description\": \"TDB online\",\n                    \"link\": \"tdbbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/tdbbank.png\",\n                    \"name\": \"Trade and Development bank\"\n                },\n                {\n                    \"description\": \"Голомт банк\",\n                    \"link\": \"socialpay-payment://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/socialpay.png\",\n                    \"name\": \"Social Pay\"\n                },\n                {\n                    \"description\": \"МОСТ мони\",\n                    \"link\": \"most://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/most.png\",\n                    \"name\": \"Most money\"\n                },\n                {\n                    \"description\": \"Үндэсний хөрөнгө оруулалтын банк\",\n                    \"link\": \"nibank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/nibank.jpeg\",\n                    \"name\": \"National investment bank\"\n                },\n                {\n                    \"description\": \"Чингис Хаан банк\",\n                    \"link\": \"ckbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/ckbank.png\",\n                    \"name\": \"Chinggis khaan bank\"\n                },\n                {\n                    \"description\": \"Капитрон банк\",\n                    \"link\": \"capitronbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/capitronbank.png\",\n                    \"name\": \"Capitron bank\"\n                },\n                {\n                    \"description\": \"Богд банк\",\n                    \"link\": \"bogdbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/bogdbank.png\",\n                    \"name\": \"Bogd bank\"\n                },\n                {\n                    \"description\": \"Тээвэр хөгжлийн банк\",\n                    \"link\": \"transbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/transbank.png\",\n                    \"name\": \"Trans bank\"\n                },\n                {\n                    \"description\": \"М банк\",\n                    \"link\": \"mbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/mbank.png\",\n                    \"name\": \"M bank\"\n                },\n                {\n                    \"description\": \"Ард Апп\",\n                    \"link\": \"ard://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/ard.png?v=2\",\n                    \"name\": \"Ard App\"\n                },\n                {\n                    \"description\": \"Toki App\",\n                    \"link\": \"toki://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/tokipay.png\",\n                    \"name\": \"Toki App\"\n                },\n                {\n                    \"description\": \"Ариг банк\",\n                    \"link\": \"arig://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/arig.png\",\n                    \"name\": \"Arig bank\"\n                },\n                {\n                    \"description\": \"Мон Пэй\",\n                    \"link\": \"monpay://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/monpay.png\",\n                    \"name\": \"Monpay\"\n                },\n                {\n                    \"description\": \"Hipay\",\n                    \"link\": \"hipay://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/hipay.png\",\n                    \"name\": \"Hipay\"\n                },\n                {\n                    \"description\": \"Happy Pay MN\",\n                    \"link\": \"tdbwallet://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/tdbwallet.png\",\n                    \"name\": \"Happy Pay\"\n                },\n                {\n                    \"description\": \"Sono\",\n                    \"link\": \"sono://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/sono.png\",\n                    \"name\": \"Sono\"\n                },\n                {\n                    \"description\": \"PayOn\",\n                    \"link\": \"payon://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/payon.png\",\n                    \"name\": \"PayOn\"\n                },\n                {\n                    \"description\": \"Tino\",\n                    \"link\": \"tino://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/tino.png\",\n                    \"name\": \"Tino\"\n                }\n            ],\n            \"qr_code\": \"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\",\n            \"qr_image\": \"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\",\n            \"qr_payload\": \"0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\"\n        }\n    },\n    \"payment_url\": \"http://localhost:5173/pay?pay_id=335456d78f59a536872eac1262778916968897ea3c60cd0f883da1ba2e088bd0\",\n    \"status\": \"success\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Order status and auto-scan paid tickets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{scanner_token}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/scanner/orders/{{scanner_pay_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "scanner",
+                "orders",
+                "{{scanner_pay_id}}"
+              ]
+            },
+            "description": "Poll after customer payment. Once paid, the server generates and mails tickets, returns ticket numbers/codes, and auto-scans them for the staff/device."
+          },
+          "response": [
+            {
+              "name": "Order status and auto-scan paid tickets",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{scanner_token}}"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scanner/orders/{{scanner_pay_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scanner",
+                    "orders",
+                    "{{scanner_pay_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "CFfYiVSJIPaleqhMuIUNzmuKVnkwVtWX"
+                },
+                {
+                  "key": "X-Xss-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 04 Jun 2026 11:07:29 GMT"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"order\": {\n        \"id\": 71,\n        \"pay_id\": \"335456d78f59a536872eac1262778916968897ea3c60cd0f883da1ba2e088bd0\",\n        \"event_id\": 4,\n        \"event_title\": \"sm1\",\n        \"total_amount\": 100,\n        \"currency\": \"MNT\",\n        \"status\": \"pending\",\n        \"ticket_generated\": \"no\",\n        \"email\": \"enkhelmo@mail.com\",\n        \"phone\": \"\",\n        \"scanner_staff_id\": 3,\n        \"auto_scan\": true,\n        \"device_id\": \"postman-scanner\",\n        \"created_at\": 1780571166\n    },\n    \"payment\": {\n        \"order\": {\n            \"currency\": \"MNT\",\n            \"order_id\": 71,\n            \"status\": \"pending\",\n            \"total_amount\": 100\n        },\n        \"qpay\": {\n            \"banks\": [\n                {\n                    \"description\": \"qPay хэтэвч\",\n                    \"link\": \"qpaywallet://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://s3.qpay.mn/p/e9bbdc69-3544-4c2f-aff0-4c292bc094f6/launcher-icon-ios.jpg\",\n                    \"name\": \"qPay wallet\"\n                },\n                {\n                    \"description\": \"Хаан банк\",\n                    \"link\": \"khanbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/khanbank.png\",\n                    \"name\": \"Khan bank\"\n                },\n                {\n                    \"description\": \"Төрийн банк 3.0\",\n                    \"link\": \"statebankmongolia://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/state_3.png\",\n                    \"name\": \"State bank 3.0\"\n                },\n                {\n                    \"description\": \"Хас банк\",\n                    \"link\": \"xacbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/xacbank.png\",\n                    \"name\": \"Xac bank\"\n                },\n                {\n                    \"description\": \"TDB online\",\n                    \"link\": \"tdbbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/tdbbank.png\",\n                    \"name\": \"Trade and Development bank\"\n                },\n                {\n                    \"description\": \"Голомт банк\",\n                    \"link\": \"socialpay-payment://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/socialpay.png\",\n                    \"name\": \"Social Pay\"\n                },\n                {\n                    \"description\": \"МОСТ мони\",\n                    \"link\": \"most://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/most.png\",\n                    \"name\": \"Most money\"\n                },\n                {\n                    \"description\": \"Үндэсний хөрөнгө оруулалтын банк\",\n                    \"link\": \"nibank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/nibank.jpeg\",\n                    \"name\": \"National investment bank\"\n                },\n                {\n                    \"description\": \"Чингис Хаан банк\",\n                    \"link\": \"ckbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/ckbank.png\",\n                    \"name\": \"Chinggis khaan bank\"\n                },\n                {\n                    \"description\": \"Капитрон банк\",\n                    \"link\": \"capitronbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/capitronbank.png\",\n                    \"name\": \"Capitron bank\"\n                },\n                {\n                    \"description\": \"Богд банк\",\n                    \"link\": \"bogdbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/bogdbank.png\",\n                    \"name\": \"Bogd bank\"\n                },\n                {\n                    \"description\": \"Тээвэр хөгжлийн банк\",\n                    \"link\": \"transbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/transbank.png\",\n                    \"name\": \"Trans bank\"\n                },\n                {\n                    \"description\": \"М банк\",\n                    \"link\": \"mbank://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/mbank.png\",\n                    \"name\": \"M bank\"\n                },\n                {\n                    \"description\": \"Ард Апп\",\n                    \"link\": \"ard://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/ard.png?v=2\",\n                    \"name\": \"Ard App\"\n                },\n                {\n                    \"description\": \"Toki App\",\n                    \"link\": \"toki://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/tokipay.png\",\n                    \"name\": \"Toki App\"\n                },\n                {\n                    \"description\": \"Ариг банк\",\n                    \"link\": \"arig://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/arig.png\",\n                    \"name\": \"Arig bank\"\n                },\n                {\n                    \"description\": \"Мон Пэй\",\n                    \"link\": \"monpay://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/monpay.png\",\n                    \"name\": \"Monpay\"\n                },\n                {\n                    \"description\": \"Hipay\",\n                    \"link\": \"hipay://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/hipay.png\",\n                    \"name\": \"Hipay\"\n                },\n                {\n                    \"description\": \"Happy Pay MN\",\n                    \"link\": \"tdbwallet://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/tdbwallet.png\",\n                    \"name\": \"Happy Pay\"\n                },\n                {\n                    \"description\": \"Sono\",\n                    \"link\": \"sono://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/sono.png\",\n                    \"name\": \"Sono\"\n                },\n                {\n                    \"description\": \"PayOn\",\n                    \"link\": \"payon://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/payon.png\",\n                    \"name\": \"PayOn\"\n                },\n                {\n                    \"description\": \"Tino\",\n                    \"link\": \"tino://q?qPay_QRcode=0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\",\n                    \"logo\": \"https://qpay.mn/q/logo/tino.png\",\n                    \"name\": \"Tino\"\n                }\n            ],\n            \"qr_code\": \"iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAABmJLR0QA/wD/AP+gvaeTAAAeZElEQVR4nO3da3hU1bkH8P9MuBgIKMglQEkCaFEBi02BiooXRECxtBSEWg96yq2iBxW1Yi8+tkK9lVrxgpBy0bYWKViRc0QQRKNSBVFQUApEEyByUVEICZdc5nygpWQys/esWe9ae1bm/3seP5jZe+2Vmc2btde8612hSCQSARGRA8JBd4CIKFEMWETkDAYsInIGAxYROYMBi4icwYBFRM5gwCIiZzBgEZEzGLCIyBkMWETkDAYsInIGAxYROYMBi4icwYBFRM5gwCIiZzTQbSAUCsn0JAHRpbv8rq1a6iu6Pa/r2S4j5vW7+vVF9TPye59VPwevc6OZ/kxV6PyequdLf4Z+dH83yWur4AiLiJzBgEVEzmDAIiJnaM9hRZOc21Gdz4g+3m/uRZXJeSvd31XnXL/fS/V1r7k+v2vrzq2ovI+qc3PS98/J7UvP3emy+e9YBUdYROQMBiwicgYDFhE5Q3wOK5pu7orkuZLzBLrzG6rne/Vd9fdSvZZkjpDq+yTdV69jdee0dO516WsHOQdlcr6NIywicgYDFhE5gwGLiJxhfA7LJN05BZ15J5PrFFXZXofmJ8i5GZ33WTcfze94nWtHk35fXMERFhE5gwGLiJzBgEVEznB6Dku6po/K+UHmxai2J51PpPO6ybZ1j9ed89R5XXeNZX2Zo/LDERYROYMBi4icwYBFRM4wPocV5LO0yfpXpnObVOcsvM41zeQaTJN1omzXj9epG6bL5BpdmzjCIiJnMGARkTPEHwltLgMxvezDZskOnb7ZTqnwE+QSJsn3TbXtaCqfi+nSNiZLBtnEERYROYMBi4icwYBFRM7QnsNKpbQF08s+bH4NrUJ6OYvu+Sa/Qg9yHlG3fS+m5/psvq8mcYRFRM5gwCIiZzBgEZEzQhHDD6+S8wS6JZB1j/fKm5FmMk/GZJlhadIlk1OV9Gdislx4kOWZOcIiImcwYBGRMxiwiMgZ2nlYNstg6JbH1Z2L0Vm/J721vQrdeR6d3830usb6Un5Gem7OZBls09vpeeEIi4icwYBFRM5gwCIiZ1jPw/KjkusknR9kcm5GMgdMtW0/pvPbVNpSZfL+UmkrFpvzayZz66Q/I+ZhEVFaYMAiImcwYBGRM8TzsFS32PZqL8i5FVUu5VlJ59Ho1E23PRcoWdNM8v6Svlel68+rtG3y3x1HWETkDAYsInIGAxYROcP4voSqc1o6eTLS69a8ztfZSj6Rvqn87tJzUH7tm8zDsllnzPT8mer5KqTrYXm1H+T+ndE4wiIiZzBgEZEzGLCIyBnaawlNzjmYrMmezOsmmVxXZnJ+Q/V86RwwnXvCZi3yWO3pCLImlc05q2gcYRGRMxiwiMgZDFhE5AztPCybe/8FvfbLZC0lnZwg6TkpXTrvk+r7EuS+hCbnjWzPM5rcS0HlWn44wiIiZzBgEZEzGLCIyBmB52EFuW+czTyraJL1skzvkWhyfk33fTCZAyQ9F6hTpz/I3LpU+ow4wiIiZzBgEZEzxNMa/OiUTZEs85rM+Sa3ILNZ/kP12ia3IJN+9DG5fZXJpTzSn6FqXyXvdZPlZzjCIiJnMGARkTMYsIjIGeJb1UvO7Zje8kn1eJPbxfvR2UoryLI6QaZUJHJ9Lza3mUu19A+b/y5VcIRFRM5gwCIiZzBgEZEzxLf5iqYzfyK5LXkidPKVgpxHMjlfEYvOtuaqr0svr9KZhwyylJLtvqqwucSNIywicgYDFhE5gwGLiJxRr8vL6F7b5BbsQa6JM11CWbK8jMm5GttleEzmZUnnGLK8DBGRJgYsInIGAxYROUM8D8v0nIVKW9Js1jeS7EuQbUvPvZikO6cluRZVtxacX/sqr+veq6yHRURpiQGLiJzBgEVEzrC+llDnXNu1yXVyoXTnHPxIrmtUaTsRKr+byfchVvtB5rN50Z3jlJ4LVMml87uW5PvEERYROYMBi4icwYBFRM4QX0soWZvadp0nPyp7tem0rdq+6Xkg1etJriX0Y7POut+1g9y3UPV8FdJrKJmHRURpgQGLiJzBgEVEzgi8prvX8SbnBJLpm05uiuq1deY3VK9ts2667fk2FabzjUyuRbWZe2dzX8toHGERkTMYsIjIGQxYROQM43NYOs+7qmv9oqnuWyg5r2SyPlF0+7bz03TqpnsdmwjJ+RLdeSGb6xhV7xeTuVA256yicYRFRM5gwCIiZ2gvzanToMWhqd+1o0l+bS29PZXf+ZJ9sVmuOegt1U0+hvm1Z3IrLT8mt5WLZvPfOEdYROQM45PuVP+Ew2Hk5+cjPz8f3bt39zx2//79KC0txZ49e7B161Zs2rQJ7777LtavX4+amhprfab6gY+ESR6fbo+Ebdu2xbBhwzBkyBBcfPHFaNq0qe85XsrLy1FYWIjBgwcr9YWPhImpr4+EKVdeRqf0rx/dm93r63rTZYe92JyTMiESiWD58uWYPXs2lixZUmvkFWS5Z9NBxOtaQZdWUrnXTQaoaAxYCn1hwDKvuLgYDz74IObOnYtjx44xYCXZl/oasDjpTrWMGDEi0Ovn5eVh5syZ2LJlC0aOHBloXyj1cISl0Jf6PMLq1KkTZs2ahQEDBgj2TB5HWPrXSkSqjrC0vyWU7pxKTo/pUiWSy4hUSZaXMX2DHTh4CF99fRBffrkflVXV+GL/QdTUVKNJ5iloeWoWGjZqhNatWqB169OREdYb1Af5JY7utU0uaTE5DWC6tI0KpjWksczMTBQUFCif9/WBMmz+aBve27gFL63egJc/3pvYiRHgju+fh/N7dcO53b+JTnkdtQMYpRfxtIY6FxCMtqk8wpI8N9b5XpL5Pdq2bYslS5agT58+CV2jsqoKGzZ+jBeXvYGpC99JuG9eBnyzFcZeOwCXXNQLbVqfnlQbNovJmXxsC/LLhUTa97qWU2kNvhdgwFI+N9b5XlR/j9zcXKxevRqdO3f2bbuyshJvrFmPh59cjJc/3pdwn5REgOkT+mPksIHo0L6t0qkMWLGPV5U2AUv3jZW8waQnJiU/ROm+JJs4mpOTg5KSkoT69P7Gj3Hf9D/h7xtKEzpeW00Ec372fYwYNgjNspok1YR04qnOtfyubTJgBfkH0+k8LNXjGbAS60syAatt27ZYs2aN78iq7FAFZs/7G+4oeDWBnsvrl9cCj06dgJ7nnq18LgNWYu2p9lXn2pIYsITaS/WAlZmZidWrV/vOWRWX7MJNd83ASx8lOJFu0PwpP8S111yJhg0S/26IASux9lT7qnNtSfyKJk0UFBT4Bqt16z/Ed6+5NyWCFQDc8MBi/OaBWThUXhF0VyhFiI+wokkmipqm8pdCd+JR8i+oX1tjxozBnDlzPNt//c11uGTi457HBGX8ZV3xu6m3oFlW/AXX48ePR0FBgdLIQnoiW3cUZPPaqud7tSX5e/temwErfl/qS8A6dOgQsrKy4ra95u33cMG4RwFzyfjaxl/WFdOn3YqsprEn48vLy9GzZ09s27at1s8ZsBJrz5WAxUfCNOAVrD7cvBUXjE/tYAUAs1/9Jx58ZB4qq6pivt60aVPMmjXLer/ILo6wPPpSX0ZY8ezZ9wUGX/srbNjnzhzR03f/EKN/9L2Ej+cIK7H20maEFYlEav0XLRQKef4Xff7J/0Uf68fveL/X/X4XFZJtxeL3ezZs2BCffvpp3PMrq6ow9aE5TgUrALj+/sXY8MGWuK8XFxejcePGCd1f0VTuzUTOj6ZzT+jeTzp993tf/NqS/LfAR8J6auzYsejUqVPc119aXognVnxktU9Sbr3nKZQdih1o8/LyMGbMGOt9IjuMl0j2o/PYpXq86LcVwnlXko8n4XAYRUVFyMvLi/n6vs+/RM4Vd+BotcGa6pEIILgsJtqcO7+Pn/zXD2K+tmPHDnTu3BnV1dVWH3Wimby/bOb9BfkIGI3VGuqhq6++Om6wAoD5f1kqGqyGf/sbGPG9i3B2185odXoLtDitOcLhMMorjuDAwYMoLinF2+s24b4/FaKiWubmHfPQCxh4eV90aFd37WFOTg6GDh2K559/XuRalDqMT7qrkpyI9Gtb8i9qkCOs6HNffvllDBo0KOaxO0t3I2fwFKW+xjNpcA+Mu34ozjnrDITD/p/NgYNlWLHqLdz20GKUlh/Tvv708f0x+ebRMV9bsWIFBg4cqNW+9Geq8hnaznT3Ot70F0oqGLASvLbf9VMpYP37C4tYHnvqWUx6crlSX6PlZjXCvAfG4uILeycUqKJ9/sV+PPjI05i+dINWPxAB9r76CNq0bhnz5Xbt2mHPnj3JN8+AlVTfTAYsTrrXQ/FuzoNlh/DLgle02r4w9zQUPvdrXNqvT1LBCgBat2qJ++/9Hzx16xCtviB0PEM/nuHDh+u1TymHASuNrH9vEw5WJj931bdjcyyY9XPkdGyv3ZeGDRtg3H8Px8xbrtJq54/PvoLqOBuyDhmiGRAp5QRe0z1WzodUX/zaDjLRT5XEsHrl6+8mf3JNBLOn36JcYM9LOBTCmNHDsO2TXfj90o1JtbHin5+juHgXunTOqfPawIEDkZGRgerq6hM/k/wMpR/DdK6lem2/9lWubfIRMBpHWGmiouIwHlgc//HJz/y7h6HbWWeI9gn/GmnddesNaHNK8n87P9i8Ne5rvXr1SrpdSj0MWGmiZMdnqEnyD19+dhZ+OPQK6S6d0KZ1Szw2Jfn9EN9ZHz8BNj8/P+l2KfUwYKWJok93Jn3u7eOuRFaSJYsTdUX/vmic5CT+Q0s2xH0M6dGjh2bPKJVoByy/tYKq6wH91m/ZXMNkcm2hatuJvLcrV66Me/4nJcnXZb/g/G8nfW6iTju1OX513YVJnRuprsa+L/bHfG3ChAlx32fVtad+95fqWkKVtiXvxVh9kfx3pvpvXgVHWPVIdnZ23NdKdiSXj3TZGaejY4d2Gr1KXN/eyY+G9n91QLQvlJoYsOqR9u3jpxu8vjG5R8L+fc8xuSSwltyc5NMlDrOMclpgwKpHmjVrFve19Vs+T6rNMzt30OiRmuYe/fdTVn5EtC+UmsTzsIKsiGA6P8RruYL0yv5knv0bNmwY8+c1kQjQOLm/TSZzaqI1a9YUiKBW9dOfXn4WLr3wvFrHHa2sxuhpC2v97FDF4bjtxnsvJd5zlfa87ke/a+tWQVFtX+dzN3nPsFpDGgjheOJnqquurq5TqvnCPj1wzbDaC7m/OnAIiApYphN3KTXwkbAeqaysjPnzUCgEhDOSavNQhb1HrQMHyur8rGmTU+r87OiRun1qeVrsx8maOMt2yE3aIyyThehMV0AwSfcRUGelfyyjL+mCZ94s8j0u2sZNnyifk6zTTm2GtwpuxSef7sL7H27Ho//3AVrHqMQQKzA3bBA7IJeV1Q2CyZJIbTlZKlVEUDlfckmbKo6w0kRO+1ZJnTdz+SZUHLYzysrMPAV9+5yH60ZdjenTbsOx9+YgFArj7bUbsHPXblRWHt8xZ9/nX9Y5t3Wr2CVmdu/ebbzfZA/nsNLEWWd2BPCO8nmVNRFs2rwVvb9zrpF+eQmHw1j2yhpMXXi8343CIYwbcA7KD0cV/4sALVqcGrONvXtTYxdrksERVprIy00+PWHhC6tE+xLLh5u34qE/zMPmj7edmHcqL6/A1AX/CbLHaiJ4YvlmzC+svVnqVT2y4+4KvWVL/B12yD3WK45Kf5UsSWeeQLfUiGrfVO0q3YOOg+9K+vwPF/wS3c85U6sP8VTX1OCWn/0OT6zYDAD4Qc8OmDD6ShyrrML37prne/4TNw/CxPE/Eu+XdCqKzj0hOTesK8i5ZY6w0kSH9tm4/Mzk5rEAYOr0Z3DkqH4d9lgK31h7IlgBwN83lGLQ5IKEghUA9PzWWUb6RamHAStNhELAqKEXJH3+c+t24MmCBagRzucq2VGK66f8MaFj85o1wm+vv6jWz0IAup1tZuRHqYcBK41cdP55CRwV3+2zV+Evzy0VDVov/O9q7CyvnaZwTsvMmMfec+OVuPv2sfh89R+weOp1uKxLS9x7bV+c2jxLrD+U2lJuI1Wv3BS/a0kvj1E9X4XuHFcyH1tNJIIfj70HC9btUD73ZNPH98fEcaNwSuNGWu0AQGVlFX43Yz5+/vQbAICcrEZYs3gaSkv34M7fzEFh8dcAgIxwCLtX/r5W+kJlZRXKDpWjZZxvCCdNmoQZM2Yk3BeTO8/4MZ2HZbNcM/OwSEm8GyQcCmH89fobM9w+exWuv/E+bPpoWwJH17ardA/e27AZ24pKgH+VSL7zlhvw2xv6AQAW/OEmdGjXBr2/cy6W/nkapo/rDwB45ucj6uRaNWzYIG6wAoBFixYp949SG0dYguerMDnC8tpI9ejRY7jqR1Owanvd5MtkTL66J0b+oD+6d/smmmTWXUYDAIePHMVHW7Zj6bJC/Pqvb5/4+eM3D8bEcaMQCgFV1dXY+MEW5J/Xrc7569/fjLO7dkGTGMt04lm5ciUGDBhgdOQQjSOs5PqmggFL8HwVJgPWsGHDPLdpf/3Ndbhk4uNK1/PTIBzCxIHd0OOczmiedXwO6uixKmzYVITZyz7AoarYa/peeXQCLr+0r2fbr77+Nt55dzN+OmYEWpzWPKH+jBgxAosWLWLASrAvaROwbL6xQeeiqJQD0Q22kjlg0aqqqzHpzocxc+XHnsfZ0KJRBt57/j7k5cRObC0uKUWfEfdg35Eq9G7fDL+/9ye44LuJl2xWuZ9MliNK5HoqbPbN9LVUcA4rDTXIyMBdt45G04zgP/6vjlXjF/fNQnmMelZf7v8aN931KPYdOb6GcO1nZbhw/KNYuuy1AHpKqSD4O5YCkZvTHs89cEPQ3QAAPPtOCWbPqztBvmLVW3jpo9prAYd0z8al/Xpb7B2lEgasNDZ4QD/cf8PFQXcDADB51kq89sbaWj+7ZtggzLhp4In/z2vWCI8/MAlZTc1uOUapSztgqW4/pLoVksr2QX598Wo71n9efdd9HyTfN6/3adWq+AuXw+EQJt14LX56+dm+17fh2jtmYeeu/+zuk5GRgYljR+HJSVcCAP722C3IjTPXBQCrV69Wukd0t6NSPV/lM1S5F2NdW/d3k2xL9V737Iv0t4R1LmDx2wnd4/3O9yL9Nuq8byef26VLF2zfvt2zrYNlh3Db3Y9gbqH3cTaMvqAznnpkCjJPaXziZzU1NdhWVIKuZ3aKe15FRQV69uyJbdu8c8OC/OJE8lp+5+t+qaPz5ZdJfCSs54qK/KuMNm+WhUfuvy0lRlrPvPUJ5jy9uNbPwuGwZ7ACgMmTJ/sGK3IfR1gK53tJ1RGW37Enqzh8BDNmPou757+eYC/NeWPWJFx4fn5Cxy5cuBAjR45M6FiOsJJ7XaWvJhkPWHUuaDC/SPXaOkzfzDo3kM77VlMTwbJXCjFyynyUVwe3gUOX5o1RuGgq2me30WpH8h6SDgI6f6z9mExMtj1wOBkfCamWcDiEqwZejM0vTsONAT4iFh08il9OnYWjhmpwkZsYsCim3I7t8djDd+K1J29G/zNOD6QP8wq3Y/6fXwjk2pSa+EiYpPr6SBjL0aPH8I+1G/DU/KV4TrM0TbTTG2Wg/7c6YKFHu2v+eBvO790zqfb5SChzvldbNh8Jja8lNHm+9Ieoc4PZfh90g292djZefPFF9OrVK+FzaiIRbC8qwZv/eB9/XfImVm79Iqlrh0PA3cN747J++eidfy6aNm2CT4p34rXCtfjFk8uw93Dtgn7dW2Vi5YJpaNvGf6Rn8osS6YlvlWtJ/1GSnHSX/gPphQFL4/Vkj5U4X2K0mJmZiblz52LUqFHK50YiEXy2ex+Kd5SiuKQU/9y+Czs++wJPFxYBx6qOR6VjNfhutzbo26MjOuVko1NuB3Tu9A3kdmyPJk1iVxWtOHwE69Z/iAXPr8JTJy3OHndpV/TrnYvrfvxjz34xYJlp32RfVDBgabye7LES59t8vE22Pd0+luz8DKsL1+LBgpexZf9h4KsiRHa+6XkOA5aZ9k32RQU3UiVxUsE0t2N75LY/FQ32/wP47BiQ1e7EkhpKT4EnjkbzSuwzPcmp0p5kIl4sRofVPn0tLi5GXl6esetLkry/vI6V6EuQn2kQicgmMK2B6ujatSsmTpyIHTtkvxEk0sURVpLt1ecR1r9fz8jIwNChQzFhwgRcccUVxvqjgyOs2NeuryMsBqwk20uHgHWy7OxsDB8+HEOGDEG/fv2QmRn7Wz7bGLBiX5sBK14Dmh+S5Ddxpr9pU7nZvc5N5PxUTjrMyMhAr169kJ+fjx49emDChAkx26mpqUFZWRl2796NvXv3YsuWLXGPTbSvun8IdNqymSDp13Y0k/dXkJkAddpiwEocA5b+8bqfCQNWbOkSsDjpTkTOYMAiImeIJ46aHAb7ta37GKXzuCI9yS6ZiazaN8nJY9X7QfoxLdrJ7ekmoEomsEr3RfLRWffakjGBIywicgYDFhE5w/haQp1vK2wOa1Xb133Mkhwmqz5OSucXSbKZ82P6M5TM6/OjO12ic67NvCyOsIjIGQxYROQMBiwickbg9bBUMmyjSWdNqzCdtmBz3sDm1/u2M7b9jlchnaLh1Z70/Jrq6zqfqck5LY6wiMgZDFhE5AwGLCJyhvgcluQSAelV4SZrUuk+twdZr8hkBQXd+TGTv4v0ZxZkfpvJfyu6/45YrYGI0hIDFhE5gwGLiJwhXtPd5Loz6fwOyRIu0hVETVYYlc7xMrkG02TtfJNtq7ZvOpfJZvkZ5mERETFgEZFLGLCIyBniu+YEuaOGKslddmzX7tLZwUel7VhU5p1s79jjRye/SHrXHJtzfzrX1sUSyUSUlhiwiMgZDFhE5IyUq+kudW6s823Oj0UzmVcjnTelW6tLh8m66X7nRjOdr6aTh2W6XpbOtU3WcuMIi4icwYBFRM5gwCIiZxifw9J51tad90mlnC6TdaFs1wGzucei6rV13mfdeSPdeSWVc/365kflM/Sr925z/wGOsIjIGQxYROQMBiwicob2HJb0GieT69BM7v1nOjdFZ/9Gv76aJDmvk0h7kjXdg1xvZ3IfwVgk90xkPSwiIgYsInIJAxYROUM8D0vyWdt0jSnd9VcqbUXTnW8zSbcvOnXDTNd8V1m/ZzoPUHL/Rt2+RFOpG8Y8LCKiGBiwiMgZxksk67we5HIX3falt39XPV+nLdN9V2F72ZHJa6v0S/qxyua/Q5aXISJiwCIilzBgEZEzxJfm+FF53lVt2+ZX5qZLsJhM/5BM59AluZRLtX3Tc3E6aQ2m01gkyzzZ3OKOIywicgYDFhE5gwGLiJyhnYdlUtD5Qam0NEdnjkN6eYvNreqj2cz5kc7zs9k3k1uQ6WIeFhGlBQYsInIGAxYROUO8vIzJ9VXSJPOwTG8drtK+9PumOwfmdaxpOqVu/AS5JZlfX2zndXlheRkiSksMWETkDAYsInJGytXDUmG6PpbJ9Xwmc8JUz5Xccsx2X3Sv53WsKsmt2oIuJe0lyG3lOMIiImcwYBGRMxiwiMgZ4nlY0XTrGelcSzJ/KNbxkn2TrGklPe/j177NvuiuJ1XJpVNt249k7Te/tqPp9F26thvXEhJRWmDAIiJnMGARkTOMz2FF06mlJF0PSzJHTHd+Q3LfOFXSNeFNtZXI8TY/Q5vr94JeV6tyrurcoAqOsIjIGQxYROQMBiwickZK13T3Iz3HFc3k+ipdkuvQotmsLx9kfSzb74PJtamqbN7bnMMiorTEgEVEzmDAIiJnaOdh2Zy7Ua2jLr1WzGZ9LJv1wE3mSgWdP6RT/0p3zZxOX3T7ppvfpvK7m6yfFo0jLCJyBgMWETmDAYuInCG+llByzkJ3bz/V9iRrd5muTe7Vts35r0T640V6HimV9khUuR+la0yZrPUWZOomR1hE5AwGLCJyhvHyMja3BJIeJgf5Va9OeRnVR1uT5ZpVSX9FLnk/6bZtc3s01fYkmVx+xREWETmDAYuInMGARUTOsF4iWZLpOSnb6QDJkp5LMbndmcltu2K1p1NaWvrz12lPty8685amtz9TwREWETmDAYuInMGARUTOcHoOy/QSFJP5RTbLNUtvg24zP80mm3l6fserlpvxo/NvRbrUDcvLEFFaYMAiImcwYBGRM7S3+TK5bsj2llA6uSm6fdWZo5Auq2MzP8n0/Idk30xu+2X699L5jIPemu1kHGERkTMYsIjIGQxYROQM8TysVFpvpzoXI7kOTbpvKudLl4KWzBmzuQbO73W/c4OcJ1KlOxfo9bub3rJOBUdYROQMBiwicgYDFhE5QzsPi4jIFo6wiMgZDFhE5AwGLCJyBgMWETmDAYuInMGARUTOYMAiImcwYBGRMxiwiMgZDFhE5AwGLCJyBgMWETmDAYuInMGARUTO+H+mmYBuVCpL1gAAAABJRU5ErkJggg==\",\n            \"qr_image\": \"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\",\n            \"qr_payload\": \"0002010102121531279404962794049600260610438486927540014A00000084300010108CAXBMNUB0220AgPF9Erl2xekXpdkarNX5204533153034965406100.005802MN5912POSTMERCHANT6011ULAANBAATAR62240720AgPF9Erl2xekXpdkarNX7106QPP_QR781521943351425160979023580020163045C6E\"\n        }\n    },\n    \"status\": \"success\",\n    \"tickets\": []\n}"
+            },
+            {
+              "name": "Order status and auto-scan paid tickets - not have access",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{scanner_token}}"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/scanner/orders/{{scanner_pay_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "scanner",
+                    "orders",
+                    "{{scanner_pay_id}}"
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Vary",
+                  "value": "Origin"
+                },
+                {
+                  "key": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "key": "X-Frame-Options",
+                  "value": "SAMEORIGIN"
+                },
+                {
+                  "key": "X-Request-Id",
+                  "value": "EWCnKBfuPeLnbXpdoGFGEYinFduKexpH"
+                },
+                {
+                  "key": "X-Xss-Protection",
+                  "value": "1; mode=block"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 04 Jun 2026 11:41:14 GMT"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "72"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"message\": \"staff does not have access to this event\",\n    \"status\": \"error\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Mobile scanner app API. Staff log in with accounts managed in /admin?tab=staffs. The dashboard returns assigned events, scanned counts, and ticket plan breakdowns. Scan responses include duplicate-scan history and custom form answers. Staff-side checkout creates a QPay invoice and auto-scans paid/generated tickets."
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5173"
+    },
+    {
+      "key": "frontend_origin",
+      "value": "http://localhost:5173"
+    },
+    {
+      "key": "event_slug",
+      "value": "ara"
+    },
+    {
+      "key": "ticket_session_key",
+      "value": ""
+    },
+    {
+      "key": "email",
+      "value": "test@example.com"
+    },
+    {
+      "key": "phone",
+      "value": "99112233"
+    },
+    {
+      "key": "otp",
+      "value": "1234"
+    },
+    {
+      "key": "plan_id",
+      "value": "1"
+    },
+    {
+      "key": "pay_id",
+      "value": ""
+    },
+    {
+      "key": "order_id",
+      "value": "1"
+    },
+    {
+      "key": "ticket_id_or_code",
+      "value": "1"
+    },
+    {
+      "key": "provider_reference",
+      "value": "provider-ref-123"
+    },
+    {
+      "key": "gateway",
+      "value": "qpay"
+    },
+    {
+      "key": "jwt_token",
+      "value": ""
+    },
+    {
+      "key": "thirdparty_jwt_secret",
+      "value": "replace-me-in-production"
+    },
+    {
+      "key": "thirdparty_jwt_issuer",
+      "value": "pick.mn"
+    },
+    {
+      "key": "tenant_id",
+      "value": "demo-tenant"
+    },
+    {
+      "key": "admin_username",
+      "value": "admin"
+    },
+    {
+      "key": "admin_password",
+      "value": "password"
+    },
+    {
+      "key": "scanner_token",
+      "value": ""
+    },
+    {
+      "key": "staff_username",
+      "value": "s1"
+    },
+    {
+      "key": "staff_password",
+      "value": ""
+    },
+    {
+      "key": "staff_id",
+      "value": ""
+    },
+    {
+      "key": "scanner_event_id",
+      "value": "1"
+    },
+    {
+      "key": "scanner_plan_id",
+      "value": "1"
+    },
+    {
+      "key": "scanner_ticket_code",
+      "value": ""
+    },
+    {
+      "key": "scanner_pay_id",
+      "value": ""
+    },
+    {
+      "key": "scanner_order_id",
+      "value": ""
+    },
+    {
+      "key": "scanner_qty",
+      "value": "1"
+    },
+    {
+      "key": "scanner_customer_email",
+      "value": "scanner-test@example.com"
+    },
+    {
+      "key": "scanner_customer_phone",
+      "value": ""
+    }
+  ]
+}

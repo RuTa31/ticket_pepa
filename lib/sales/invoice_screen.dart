@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../auth/providers/auth_provider.dart';
 import '../common/app_colors.dart';
 import '../services/api_client.dart';
+import '../services/device_id.dart';
 
 enum _InvoiceState { form, loading, qrPayment, paid, failed }
 
@@ -64,13 +65,16 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     });
 
     try {
-      final invoice = await _api.createInvoice(
+      final deviceId = await DeviceId.getId();
+      final invoice = await _api.createOrder(
         token: auth.token!,
         eventId: widget.eventId,
-        eventPlanId: widget.planId,
+        planId: widget.planId,
         qty: _qty,
         phone: _phoneController.text.trim(),
         email: _emailController.text.trim(),
+        deviceId: deviceId,
+        redirectUri: '$apiBaseUrl/paid',
       );
 
       if (!mounted) return;
@@ -106,9 +110,9 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
     }
 
     try {
-      final status = await _api.checkInvoice(
+      final status = await _api.checkOrder(
         token: auth.token!,
-        orderId: _invoice!.orderId,
+        payId: _invoice!.payId,
       );
 
       if (!mounted) return;
@@ -145,7 +149,9 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
       if (manual) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Алдаа: ${e.toString().replaceFirst('Exception: ', '')}'),
+            content: Text(
+              'Алдаа: ${e.toString().replaceFirst('Exception: ', '')}',
+            ),
             duration: const Duration(seconds: 3),
             behavior: SnackBarBehavior.floating,
           ),
@@ -521,7 +527,9 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
             width: double.infinity,
             height: 48,
             child: OutlinedButton.icon(
-              onPressed: _manualChecking ? null : () => _checkPayment(manual: true),
+              onPressed: _manualChecking
+                  ? null
+                  : () => _checkPayment(manual: true),
               icon: _manualChecking
                   ? const SizedBox(
                       width: 18,
@@ -629,6 +637,9 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
 
   Widget _buildTicketCard(TicketInfo ticket, bool isDark) {
     final l10n = AppLocalizations.of(context);
+    final displayCode = ticket.code ?? ticket.serial;
+    if (displayCode == null) return const SizedBox.shrink();
+
     return Card(
       color: isDark ? Colors.grey.shade900 : Colors.white,
       margin: const EdgeInsets.only(bottom: 12),
@@ -640,86 +651,48 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
       ),
       child: Padding(
         padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            if (ticket.serial != null)
-              Row(
-                children: [
-                  Icon(
-                    Icons.confirmation_number,
-                    size: 16,
-                    color: Colors.grey.shade500,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    l10n.serialLabel(ticket.serial!),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+            Icon(
+              Icons.confirmation_number,
+              size: 18,
+              color: Colors.grey.shade500,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                displayCode,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? Colors.white : Colors.grey.shade800,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-            if (ticket.qrImg != null) ...[
-              const SizedBox(height: 10),
-              Center(
-                child: Image.network(
-                  ticket.qrImg!,
-                  width: 160,
-                  height: 160,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => Container(
-                    width: 160,
-                    height: 160,
-                    color: Colors.grey.shade200,
-                    child: const Icon(Icons.broken_image),
+            ),
+            const SizedBox(width: 8),
+            InkWell(
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: displayCode));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.copied),
+                    duration: const Duration(seconds: 1),
+                    behavior: SnackBarBehavior.floating,
                   ),
+                );
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Icon(
+                  Icons.copy,
+                  size: 18,
+                  color: AppColors.primaryColor,
                 ),
               ),
-            ],
-            if (ticket.qrCode != null) ...[
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      ticket.qrCode!,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: isDark
-                            ? Colors.grey.shade400
-                            : Colors.grey.shade600,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  InkWell(
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: ticket.qrCode!));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(l10n.copied),
-                          duration: Duration(seconds: 1),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    },
-                    borderRadius: BorderRadius.circular(8),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Icon(
-                        Icons.copy,
-                        size: 18,
-                        color: AppColors.primaryColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ],
         ),
       ),

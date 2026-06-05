@@ -7,10 +7,8 @@ import 'dart:io';
 import 'dart:async';
 import '../history/scan_history_provider.dart';
 import '../settings/app_settings_provider.dart';
-import '../common/network_app_logo.dart';
 import '../auth/providers/auth_provider.dart';
-import '../home/providers/dashboard_provider.dart';
-import '../home/models/dashboard_models.dart';
+
 import 'scanner_provider.dart';
 
 class QrScannerPage extends StatefulWidget {
@@ -131,33 +129,13 @@ class _QrScannerPageState extends State<QrScannerPage> {
       String? eventTitle;
       String? eventThumbnail;
 
-      // Extract booking_id from QR code (format: booking_id_ticket_id)
-      String bookingId = code;
-      if (code.contains('_')) {
-        bookingId = code.split('_').first;
-      }
-
-      // Try to get event info from dashboard data using booking_id
-      final dashboard = context.read<DashboardProvider>();
-      final tickets = dashboard.dashboardData?.allTickets ?? [];
-      final ticket = tickets.cast<TicketData?>().firstWhere(
-        (t) => t?.bookingId == bookingId,
-        orElse: () => null,
-      );
-
-      if (ticket != null) {
-        eventId = ticket.eventId;
-        eventTitle = ticket.eventName;
-
-        // Get thumbnail from events list
-        final events = dashboard.dashboardData?.events ?? [];
-        final event = events.cast<EventData?>().firstWhere(
-          (e) => e?.id == eventId,
-          orElse: () => null,
-        );
-        if (event != null) {
-          eventThumbnail = event.thumbnail;
-        }
+      // Use ticket info from scan payload if available
+      final ticketEventId = payload?['ticket_event_id'] as int?;
+      final ticketEventName = payload?['ticket_event'] as String?;
+      if (ticketEventId != null) {
+        eventId = ticketEventId.toString();
+        eventTitle = ticketEventName;
+        // Dashboard events have no thumbnail in new API
       }
 
       context.read<ScanHistoryProvider>().addScan(

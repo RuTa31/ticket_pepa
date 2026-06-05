@@ -4,12 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../services/api_client.dart';
-import '../../services/device_id.dart';
 
 class AuthProvider extends ChangeNotifier {
   static const _keyLoggedIn = 'auth_logged_in_v1';
   static const _keyToken = 'auth_token_v1';
-  static const _keyRole = 'auth_role_v1';
   static const _keyProfile = 'auth_profile_v1';
 
   bool _loaded = false;
@@ -22,7 +20,6 @@ class AuthProvider extends ChangeNotifier {
   bool get isLoggedIn => _loggedIn;
   String? get token => _token;
   UserProfile? get profile => _profile;
-  String? get email => _profile?.email;
   String? get lastError => _lastError;
 
   final ApiClient _api = ApiClient();
@@ -32,56 +29,37 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> _load() async {
-    print('🔄 AuthProvider: Loading saved session...');
     final prefs = await SharedPreferences.getInstance();
     _loggedIn = prefs.getBool(_keyLoggedIn) ?? false;
     _token = prefs.getString(_keyToken);
-    prefs.getString(_keyRole);
     final profileJson = prefs.getString(_keyProfile);
-
-    print('   Logged in: $_loggedIn');
-    print('   Token exists: ${_token != null}');
-    print('   Profile exists: ${profileJson != null}');
 
     if (_loggedIn && _token != null && profileJson != null) {
       try {
         final map = json.decode(profileJson) as Map<String, dynamic>;
         _profile = UserProfile.fromJson(map);
-        print('   Username: ${_profile?.username}');
-        print('   Role: ${_profile?.role.name}');
       } catch (e) {
-        print('   ⚠️ Failed to parse profile: $e');
         _loggedIn = false;
         _token = null;
         _profile = null;
       }
     }
 
-    // Validate token with server if we think we're logged in
     if (_loggedIn && _token != null) {
-      print('🔍 AuthProvider: Validating token with server...');
       try {
         final isActive = await _api.checkToken(_token!);
         if (!isActive) {
-          print('❌ AuthProvider: Token is inactive — clearing session');
-          await prefs.remove(_keyLoggedIn);
-          await prefs.remove(_keyToken);
-          await prefs.remove(_keyRole);
-          await prefs.remove(_keyProfile);
+          await _clearPrefs(prefs);
           _loggedIn = false;
           _token = null;
           _profile = null;
-        } else {
-          print('✅ AuthProvider: Token is active');
         }
-      } catch (e) {
-        // Network error — assume token is still valid to avoid offline lockout
-        print('⚠️ AuthProvider: Token check failed (network?): $e — keeping session');
+      } catch (_) {
+        // Network error — keep session to avoid offline lockout
       }
     }
 
     _loaded = true;
-    print('✅ AuthProvider: Load complete');
     notifyListeners();
   }
 
@@ -89,23 +67,14 @@ class AuthProvider extends ChangeNotifier {
     if (username.trim().isEmpty || password.isEmpty) return false;
     try {
       _lastError = null;
-      final deviceName = await DeviceId.getId();
-
-      print('📱 AuthProvider: Starting login...');
-      print('   Username: $username');
-      print('   Device: $deviceName');
-
-      final result = await _api.loginUnified(
+      final result = await _api.login(
         username: username.trim(),
         password: password,
-        deviceName: deviceName,
       );
 
-      print('💾 AuthProvider: Saving to SharedPreferences...');
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_keyLoggedIn, true);
       await prefs.setString(_keyToken, result.token);
-      await prefs.setString(_keyRole, result.profile.role.name);
       await prefs.setString(_keyProfile, json.encode(result.profile.toJson()));
 
       _loggedIn = true;
@@ -113,46 +82,27 @@ class AuthProvider extends ChangeNotifier {
       _profile = result.profile;
       _lastError = null;
 
-      print('✅ AuthProvider: Login successful!');
-      print('   Logged in: $_loggedIn');
-      print('   Token: ${_token?.substring(0, 20)}...');
-      print('   Username: ${_profile?.username}');
-      print('   Role: ${_profile?.role.name}');
-      print('   Profile JSON: ${json.encode(_profile?.toJson())}');
-
       notifyListeners();
       return true;
     } catch (e) {
       _lastError = e.toString().replaceFirst('Exception: ', '');
-      print('❌ AuthProvider: Login failed!');
-      print('   Error: $_lastError');
       notifyListeners();
       return false;
     }
   }
 
   Future<void> logout() async {
-    print('🚪 AuthProvider: Logging out...');
-    print('   Current logged in: $_loggedIn');
-    print('   Current username: ${_profile?.username}');
-
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_keyLoggedIn);
-    await prefs.remove(_keyToken);
-    await prefs.remove(_keyRole);
-    await prefs.remove(_keyProfile);
-
-    print('   Removed from SharedPreferences');
-
+    await _clearPrefs(prefs);
     _loggedIn = false;
     _token = null;
     _profile = null;
-
-    print('✅ AuthProvider: Logout complete');
-    print('   Logged in: $_loggedIn');
-    print('   Token: ${_token}');
-    print('   Profile: ${_profile}');
-
     notifyListeners();
+  }
+
+  Future<void> _clearPrefs(SharedPreferences prefs) async {
+    await prefs.remove(_keyLoggedIn);
+    await prefs.remove(_keyToken);
+    await prefs.remove(_keyProfile);
   }
 }

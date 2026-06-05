@@ -89,38 +89,44 @@ class MyApp extends StatelessWidget {
                 '/result': (context) {
                   final args = ModalRoute.of(context)?.settings.arguments;
                   String value = '';
-                  String? apiMessage;
-                  String? alertType;
-                  String? bookingId;
-                  String? scannedAt;
-                  String? scannedByName;
-                  String? scannedByUser;
+                  String? status;
+                  String? message;
+                  bool accepted = false;
+                  String? ticketCode;
+                  String? ticketEvent;
+                  String? ticketPlan;
+                  int? scanCount;
+                  String? firstScannedBy;
+                  int? firstScannedAt;
+                  dynamic customForm;
                   if (args is String) {
                     value = args;
                   } else if (args is Map) {
                     final map = args.cast<dynamic, dynamic>();
-                    value =
-                        map['value']?.toString() ??
-                        map['code']?.toString() ??
-                        '';
-                    apiMessage = (map['apiMessage'] ?? map['message'])
-                        ?.toString();
-                    alertType = (map['alertType'] ?? map['alert_type'])
-                        ?.toString();
-                    bookingId = (map['booking_id'] ?? map['bookingId'])
-                        ?.toString();
-                    scannedAt = map['scanned_at']?.toString();
-                    scannedByName = map['scanned_by_name']?.toString();
-                    scannedByUser = map['scanned_by_user']?.toString();
+                    value = map['value']?.toString() ?? '';
+                    status = map['status']?.toString();
+                    message = map['message']?.toString();
+                    accepted = map['accepted'] == true;
+                    ticketCode = map['ticket_code']?.toString();
+                    ticketEvent = map['ticket_event']?.toString();
+                    ticketPlan = map['ticket_plan']?.toString();
+                    scanCount = map['scan_count'] as int?;
+                    firstScannedBy = map['first_scanned_by']?.toString();
+                    firstScannedAt = map['first_scanned_at'] as int?;
+                    customForm = map['custom_form'];
                   }
                   return QrResultScreen(
                     value: value,
-                    apiMessage: apiMessage,
-                    alertType: alertType,
-                    bookingId: bookingId,
-                    scannedAt: scannedAt,
-                    scannedByName: scannedByName,
-                    scannedByUser: scannedByUser,
+                    status: status,
+                    message: message,
+                    accepted: accepted,
+                    ticketCode: ticketCode,
+                    ticketEvent: ticketEvent,
+                    ticketPlan: ticketPlan,
+                    scanCount: scanCount,
+                    firstScannedBy: firstScannedBy,
+                    firstScannedAt: firstScannedAt,
+                    customForm: customForm,
                   );
                 },
               },
